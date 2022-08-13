@@ -87,6 +87,10 @@ void	backup_reader(char **backup, char **line)
 	ft_strcpy(*backup, &ptrbu[i + 1]);
 }
 
+// Exactement pareil que la partie normale
+// sauf que les la static est maintenant un 2D array
+// qui stock les restes de lecture (après \n) array[]['ici'], 
+// en fonction du FD array['la'][]
 int	get_next_line(int fd, char **line)
 {
 	static char	backup[255][BUFFER_SIZE + 1];

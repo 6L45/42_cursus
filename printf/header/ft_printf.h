@@ -5,6 +5,14 @@
 # include <unistd.h>
 # include <stdlib.h>
 
+// f = type de flag : int / char / str ..Etc 
+// minus = si '-' present dans le flag
+// zero = si '0' present dans le flag
+// has_width = si chiffres indiquant une largeur present dans le flag
+// width = valeur de la largeur
+// has_preci = si '.' present dans le flag
+// preci = valeur de la precision
+// size = nbre de caractères écris pour le retour de ft_printf
 typedef struct s_flags
 {
 	int		f;

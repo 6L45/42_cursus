@@ -28,6 +28,7 @@ char	*ft_strcpy(char *dest, char *src)
 	return (dest);
 }
 
+// strjoin custom join s1 s2 et free s2
 char	*ft_strjoin(char **s1, char **s2)
 {
 	int		i;
@@ -81,6 +82,10 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (new);
 }
 
+// strchr custom
+// cherche character c ('\n')
+// strcpy tout ce qu'il y a avant dans la ligne à récupérer à la sortie de la fonction
+// et strcpy tout ce qu'il y a apres dans backup qui ira dans la static
 void	ft_strchr(char **line, int c, char **backup)
 {
 	int				i;

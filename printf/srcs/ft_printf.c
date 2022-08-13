@@ -76,6 +76,11 @@ void	str_print(char *str, t_flags *card, va_list ap)
 	}
 }
 
+// l'ensemble de la fonction repose sur t_flag qui est "la carte d'identité" des flags lus
+// cad : a chaque lecture de % la lecture du flag init les variables de la structure
+// qui determineront les conditions pour le comportement de la fonction. 
+// Type de flag, preci, largeur...etc
+// voir .h
 int	ft_printf(const char *format, ...)
 {
 	t_flags	card;
