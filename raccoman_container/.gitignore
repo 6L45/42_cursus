@@ -1,0 +1,5 @@
+.DS_Store
+cmake-build-debug/
+.idea/
+en.subject.pdf
+include/containers_test/
