@@ -58,8 +58,21 @@ void	ft::Vector<value_type, allocator_type>::push_back(value_type val)
 		this->_end++;
 	}
 
-		for (int i = 0; i < this->size() ; i++)
-			out *(this->_start + i) << " ";
-		out nl;
+	for (int i = 0; i < this->size() ; i++)
+		out *(this->_start + i) << " ";
+	out nl;
 }
 
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<value_type>
+	ft::Vector<value_type, allocator_type>::begin(void)
+{
+	return (this->_start);
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<value_type>
+	ft::Vector<value_type, allocator_type>::end(void)
+{
+	return (this->_end);
+}

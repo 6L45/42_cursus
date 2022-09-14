@@ -20,20 +20,21 @@ namespace ft
 	template<typename T>
 	class random_access_iterator : ft::iterator<ft::random_access_iterator_tag, T>
 	{
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category
-			iterator_category;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type	
-			value_type;
-		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type
-			difference_type;
-		typedef T*	pointer;
-		typedef T&	reference;
+		public :
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category
+				iterator_category;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::value_type	
+				value_type;
+			typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type
+				difference_type;
+			typedef T*	pointer;
+			typedef T&	reference;
 
-		random_access_iterator(void)
+			random_access_iterator(void)
 			{ this->_elem = nullptr; }
-		random_access_iterator(pointer elem)
+			random_access_iterator(pointer elem)
 			{ this->_elem = elem; }
-		random_access_iterator(const random_access_iterator &src)
+			random_access_iterator(const random_access_iterator &src)
 			{ this->_elem = src._elem; }
 
 		private :

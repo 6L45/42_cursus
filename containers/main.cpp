@@ -15,9 +15,10 @@ int	main()
 	vectest.push_back(94);
 	vectest.push_back(99);
 
-	std::vector<int>::iterator it = original.begin() + 1;
-//	ft::random_access_iterator<int> rit = ;
+	std::vector<int>::iterator it = original.begin();
+	ft::Vector<int>::iterator itest = vectest.begin();
 
+	out itest << nl;
 	out  *it << nl;
 
 	return (0);
