@@ -1,4 +1,3 @@
-#include "webserv.hpp"
 
 Webserv::Webserv()
 {
@@ -34,17 +33,19 @@ void 	Webserv::launch()
 	while (1)
 	{
 		struct sockaddr_in	addr;
-		socklen_t		addr_len;
+		socklen_t			addr_len;
 
 		std::cout << "waiting for connection on port " << PORT << std::endl;
 		//fflush(stdout);
 		this->_confd = accept(_sock, (struct sockaddr *)NULL, NULL);
-		
+
+		std::cout << this->_confd << std::endl;
+
 		this->print_request_client();
 		
 		std::snprintf((char *)_buff, sizeof(_buff), "HTTP/1.0 200 OK\r\n\r\nHELLO WORLD!"); 
 		write(_confd, (char *)_buff, strlen((char *)_buff));
-		close(_confd);
+		//close(_confd);
 	}
 }
 

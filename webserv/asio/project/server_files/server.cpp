@@ -1,6 +1,51 @@
 #include "net_common.hpp"
 
+enum class	CustomMsgTypes : uint32_t
+{
+	ServerAccept,
+	ServerDeny,
+	ServerPing,
+	MessageAll,
+	ServerMessage
+};
 
+class CustomServer : public olc::net::Server_interface<CustomMsgTypes>
+{
+	public :
+		CustomServer(u_int16_t nPort) : olc::net::Server_interface<CustomMsgTypes>(nPort)
+		{
+
+		}
+	
+	protected :
+		virtual bool	onClientConnect(std::shared_ptr<olc::net::Server_interface<CustomMsgTypes>> client)
+		{
+			return (true);
+		}
+
+		virtual void	onClientDisconnect(std::shared_ptr<olc::net::Connection<CustomMsgTypes>> client)
+		{
+
+		}
+
+		virtual void	onMessage(std::shared_ptr<olc::net::Connection<CustomMsgTypes>> client, olc::net::message<CustomMsgTypes> msg)
+		{
+
+		}
+}
+
+int	main()
+{
+	CustomServer	server(60000);
+	server.start();
+
+	while(1)
+		server.update();
+
+	return (0);
+}
+
+/*
 std::vector<char> vBuffer(20 * 1024);
 
 // recursive read at buffer size ^
@@ -27,7 +72,7 @@ int	main()
 {
 //	INITIALISATION--------------------------------------------------------------------------------------------------------------------------------------------	
 
-	boost::system::error_code ec;	// get specifique ettor -> erro handler intern to the framwork
+	boost::system::error_code ec;	// get specifique ettor -> framwork intern erro handler
 
 	// ASIO need space to perform "stuff" (do its work ?) "it does it with behind the object called asio::iocontext"
 	asio::io_context context;	// that's the context that hides all of the platform requierements
@@ -78,3 +123,4 @@ int	main()
 
 	return (0); 
 }
+*/

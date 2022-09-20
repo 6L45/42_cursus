@@ -1,19 +1,7 @@
 #ifndef WEBSERV_HPP
 # define WEBSERV_HPP
 
-
-#include<sys/types.h>
-#include<iostream>
-#include<stdlib.h>
-#include<netinet/in.h>
-#include<string.h>
-#include<cstdio>
-#include<stdio.h>
-#include<unistd.h>
-
-#define SERVER_PORT 18000
-#define SA struct sockaddr
-#define MAXLINE 4096
+#include "common.hpp"
 
 class Server
 {
