@@ -13,6 +13,7 @@
 # include <fstream>
 # include <fcntl.h>
 # include <unistd.h>
+# include <vector>
 
 # define SERVER_PORT 18000
 # define SA struct sockaddr

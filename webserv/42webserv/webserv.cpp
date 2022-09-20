@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 
 Webserv::Webserv()
 {
@@ -13,7 +14,9 @@ Webserv::Webserv()
 	this->_address.sin_addr.s_addr = htonl(this->_interface);
 
 	this->_sock = socket(this->_domain, this->_service, this->_protocol);
-	
+	int	flags = fcntl(this->_sock, F_GETFL);
+	fcntl(this->_sock, F_SETFL, flags | O_NONBLOCK);
+
 	if ( (bind(this->_sock, (struct sockaddr *)&(this->_address), 
 					sizeof(this->_address))) < 0 )
 	{
@@ -30,22 +33,30 @@ Webserv::Webserv()
 
 void 	Webserv::launch()
 {
+	struct sockaddr_in	addr;
+	socklen_t			addr_len;
+
 	while (1)
 	{
-		struct sockaddr_in	addr;
-		socklen_t			addr_len;
-
-		std::cout << "waiting for connection on port " << PORT << std::endl;
+		//std::cout << "waiting for connection on port " << PORT << std::endl;
 		//fflush(stdout);
 		this->_confd = accept(_sock, (struct sockaddr *)NULL, NULL);
-
-		std::cout << this->_confd << std::endl;
-
-		this->print_request_client();
-		
-		std::snprintf((char *)_buff, sizeof(_buff), "HTTP/1.0 200 OK\r\n\r\nHELLO WORLD!"); 
-		write(_confd, (char *)_buff, strlen((char *)_buff));
-		//close(_confd);
+		if (this->_confd == -1)
+		{
+			if (errno == EWOULDBLOCK)
+				continue;
+			else
+				std::cout << "error connection" << std::endl;
+		}
+		else
+		{
+			std::cout << "Client connected at IP: " <<  inet_ntoa(this->_address.sin_addr)
+				<<  " and port: " << ntohs(this->_address.sin_port) << std::endl;
+			this->print_request_client();
+			std::string	server_message = "HTTP/1.0 200 OK\r\n\r\nHELLO WORLD!"; 
+			send(this->_confd, server_message.c_str(), server_message.length(), 0);
+		// TO DO find a way to close the http response so i don't have to close the socket for it to work
+		}
 	}
 }
 
@@ -69,3 +80,15 @@ void	Webserv::print_request_client()
 	free(this->_recvline);
 }
 
+
+
+
+
+
+
+
+
+/*
+std::snprintf((char *)_buff, sizeof(_buff), "HTTP/1.0 200 OK\r\n\r\nHELLO WORLD!"); 
+		write(_confd, (char *)_buff, strlen((char *)_buff));
+*/

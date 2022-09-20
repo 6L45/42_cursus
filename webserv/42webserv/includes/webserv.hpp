@@ -27,6 +27,8 @@ class Webserv
 		char				_buff[MAXLINE + 1];
 		char				*_recvline;
 
+		std::vector<int>	_test;
+  
 		// private methods
 		void	print_request_client();
 };

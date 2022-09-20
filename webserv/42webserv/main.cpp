@@ -47,10 +47,10 @@ void	listen_ft()
 int main()
 {
 //	Webserv test(AF_INET, SOCK_STREAM, 0, PORT, INADDR_ANY);
-//	Webserv test;
+	Webserv test;
 
-//	test.launch();
-	listen_ft();
+	test.launch();
+//	listen_ft();
 	return 0;
 }
 
