@@ -53,7 +53,15 @@ void 	Webserv::launch()
 			std::cout << "Client connected at IP: " <<  inet_ntoa(this->_address.sin_addr)
 				<<  " and port: " << ntohs(this->_address.sin_port) << std::endl;
 			this->print_request_client();
-			std::string	server_message = "HTTP/1.0 200 OK\r\n\r\nHELLO WORLD!"; 
+			std::string	server_message = "HTTP/1.1 200 OK\r\n\
+Content-Length: 55\r\n\
+Content-Type: text/html\r\n\
+Last-Modified: Wed, 12 Aug 1998 15:03:50 GMT\r\n\
+Accept-Ranges: bytes\r\n\
+ETag: “04f97692cbd1:377”\r\n\
+Date: Thu, 19 Jun 2008 19:29:07 GMT\r\n\
+\r\n\
+1234567890123456789012345678901234567890123456789012345"; 
 			send(this->_confd, server_message.c_str(), server_message.length(), 0);
 		// TO DO find a way to close the http response so i don't have to close the socket for it to work
 		}
