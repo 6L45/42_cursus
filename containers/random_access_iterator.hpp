@@ -10,7 +10,7 @@ namespace ft
 	class iterator
 	{
 		public :
-			typedef T		value_type;
+			typedef T			value_type;
 			typedef Distance	difference_type;
 			typedef value_type*	pointer;
 			typedef value_type&	reference;
@@ -37,11 +37,16 @@ namespace ft
 			random_access_iterator(const random_access_iterator &src)
 			{ this->_elem = src._elem; }
 
+			friend	std::ostream	&operator<<(std::ostream &os,
+												ft::random_access_iterator<T> const &it)
+			{ return (os << it._elem); }
+
+			T	operator*()
+			{ return (*this->_elem); }
+
 		private :
 			pointer	_elem;
 	};	
 }
 
-
 #endif
-
