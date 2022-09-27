@@ -29,7 +29,7 @@ value_type	ft::Vector<value_type, allocator_type>::at(unsigned int n)
 	if (this->size() < n)
 	{
 		out "NONONO Vector::at()" << std::endl;
-//		exit(1);
+//		exit(1); TO DO throw;
 		return (-42);
 	}
 	else 
@@ -126,6 +126,26 @@ void	ft::Vector<value_type, allocator_type>::push_back(value_type val)
 		this->_alloc.construct(this->_start + this->size(), val);
 		this->_end++;
 	}
+}
+
+template<class value_type, class allocator_type>
+void	ft::Vector<value_type, allocator_type>::clear()
+{
+	if (!this->_start)
+		return ;
+	
+	for (pointer it = this->_start; it != this->_end; it++)
+		this->_alloc.destroy(it);
+	this->_end = this->_start;
+}
+
+template<class value_type, class allocator_type>
+void	ft::Vector<value_type, allocator_type>::swap(ft::Vector<value_type> &other)
+{
+	std::swap(other._alloc, this->_alloc);
+	std::swap(other._start, this->_start);
+	std::swap(other._end, this->_end);
+	std::swap(other._end_capacity, this->_end_capacity);
 }
 
 // ITERATOR STUFF -------------------------------------------------------------

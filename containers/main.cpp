@@ -4,21 +4,34 @@
 int	main()
 {
 	ft::Vector<int>			vectest;
-	std::vector<int>		original;
+	ft::Vector<int>		original;
 
 
-	vectest.reserve(4);
 	vectest.push_back(42);	
 	vectest.push_back(35);
 	vectest.push_back(94);
-	out "94 : " << &vectest.front() << nl;
 	vectest.push_back(99);
-	out "99 : " << &vectest.front() << nl;
 	vectest.push_back(56);
-	out "56 : " << &vectest.front() << nl;
 
-	out nl << nl;
+	original.push_back(0);
+	original.push_back(1);
+	original.push_back(2);
+	original.push_back(3);
+	original.push_back(4);
 
+
+	out vectest.at(2) << nl;
+	vectest.swap(original);
+	out vectest.at(2) << nl ;
+	out vectest.back() << nl;
+
+	vectest.clear();
+	out vectest.size() << nl;
+	vectest.push_back(42);
+	out vectest.size() << nl;
+	out vectest.back() << nl;
+
+/*
 	original.reserve(4);
 	
 	out "max : " << original.capacity() << nl;
@@ -31,7 +44,7 @@ int	main()
 	out "99 : " << &original.front() << nl;
 	original.push_back(56);
 	out "56 : " << &original.front() << nl;
-
+*/
 
 /*
 	out "empty ? : " << vectest.empty() << nl;

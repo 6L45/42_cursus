@@ -52,15 +52,15 @@ namespace ft
 		// ---------------------------------------------------
 
 		// MODIFIERS
-//			clear();
-//			insert();
-//			emplace();
+			void	clear();
+//			insert();	FIRST ==> finish iterator
+//			emplace();	CHECK si a faire ou non
 //			erase();
 			void		push_back(value_type val);
 //			emplace_back();
 //			pop_back();
 //			resize();
-//			swap();
+			void	swap(ft::Vector<value_type> &other);
 //		--------------------------------------------------------
 //
 //			operator=();
