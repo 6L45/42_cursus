@@ -1,5 +1,4 @@
 // CONSTRUCT DESTRUCT
-
 template<class value_type, class allocator_type>
 ft::vector<value_type, allocator_type>::vector(const allocator_type &alloc)
 {
@@ -7,17 +6,6 @@ ft::vector<value_type, allocator_type>::vector(const allocator_type &alloc)
 	this->_start = NULL;
 	this->_end = NULL;
 	this->_end_capacity = NULL;
-}
-
-template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::~vector()
-{
-	if (!this->_start)
-		return ;
-
-	for (pointer it = this->_start; it != this->_end; ++it)
-		this->_alloc.destroy(it);
-	this->_alloc.deallocate(this->_start, this->capacity());
 }
 
 template<class value_type, class allocator_type>
@@ -60,6 +48,19 @@ ft::vector<value_type, allocator_type>::vector(size_t count)
 }
 
 template<class value_type, class allocator_type>
+ft::vector<value_type, allocator_type>::~vector()
+{
+	if (!this->_start)
+		return ;
+
+	for (pointer it = this->_start; it != this->_end; ++it)
+		this->_alloc.destroy(it);
+	this->_alloc.deallocate(this->_start, this->capacity());
+}
+
+
+//ASSIGN ----------------------------------------------------------------------------------
+template<class value_type, class allocator_type>
 void	ft::vector<value_type, allocator_type>::assign(size_t count, const value_type &val)
 {
 	for (size_t i = 0; i < count; i++)
@@ -85,6 +86,7 @@ void	ft::vector<value_type, allocator_type>::assign(inputIt first, inputIt last,
 	}
 	this->_end = this->_start + i;
 }
+
 
 // ELEMENT ACCESS -------------------------------------------------------------
 template<class value_type, class allocator_type>
@@ -210,6 +212,7 @@ void	ft::vector<value_type, allocator_type>::swap(ft::vector<value_type> &other)
 	std::swap(other._end, this->_end);
 	std::swap(other._end_capacity, this->_end_capacity);
 }
+
 
 // ITERATOR STUFF -------------------------------------------------------------
 template<class value_type, class allocator_type>

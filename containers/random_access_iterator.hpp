@@ -32,6 +32,7 @@ namespace ft
 			typedef T*	pointer;
 			typedef T&	reference;
 
+
 		// CONSTRUCT DESTRUCT -------------------------------------------------------
 			random_access_iterator(void)
 				{ this->_elem = NULL; }
@@ -39,6 +40,7 @@ namespace ft
 				{ this->_elem = elem; }
 			random_access_iterator(const random_access_iterator &src)
 				{ this->_elem = src._elem; }
+
 
 		// OVERLOADS -----------------------------------------------------------------
 			friend	std::ostream	&operator<<
@@ -76,6 +78,7 @@ namespace ft
 			difference_type	operator!=(const ft::random_access_iterator<T_R> rhs)
 				{ return (this->_elem != rhs.base()); }
 		//-----------------------------------------------------------------------------
+
 
 		private :
 			pointer	_elem;

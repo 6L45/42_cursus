@@ -35,8 +35,10 @@ namespace ft
 			vector(std::initializer_list<value_type> lst);
 			vector(const ft::vector<value_type> &cp);
 			vector(size_t count);
-			~vector();
 
+			virtual	~vector();
+
+		// ITERATOR
 			iterator	begin(void) const;
 			iterator	end(void) const;
 //			iterator	rbegin();
@@ -48,6 +50,7 @@ namespace ft
 			void	assign(inputIt first, inputIt last,
 					typename std::enable_if<!std::is_integral<inputIt>::value,
 								inputIt>::type* = nullptr);
+
 		// ELEMENT ACCESS
 			value_type	at(unsigned int n);
 			value_type	&front(void);
@@ -65,7 +68,7 @@ namespace ft
 		// ---------------------------------------------------
 
 		// MODIFIERS
-			void	clear();
+			void		clear();
 //			insert();	FIRST ==> finish iterator
 //			emplace();	CHECK si a faire ou non
 //			erase();
@@ -73,9 +76,10 @@ namespace ft
 //			emplace_back();
 //			pop_back();
 //			resize();
-			void	swap(ft::vector<value_type> &other);
+			void		swap(ft::vector<value_type> &other);
 //		--------------------------------------------------------
-//
+
+		// OVERLOADS
 			value_type	&operator[](size_t n)
 			{
 				return (*(this->_start + n));
@@ -89,6 +93,8 @@ namespace ft
 //			operator>=();
 //			operator<=>();
 //			std::swap();
+
+
 //			erase();
 //			erase_if();
 			
