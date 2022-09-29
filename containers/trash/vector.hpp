@@ -4,9 +4,6 @@
 # include <memory>
 # include <iostream>
 # include "random_access_iterator.hpp"
-# include <iterator>
-# include <type_traits>
-# include <stdlib.h>
 
 # define out	std::cout <<
 # define nl	std::endl
@@ -15,52 +12,43 @@ namespace ft
 {
 
 	template<class T, class Alloc = std::allocator<T> >
-	class vector
+	class Vector
 	{
 		public :
 			typedef	T												value_type;
-			typedef	Alloc
-				allocator_type;
-			typedef	typename allocator_type::const_reference
-				const_reference;
-			typedef	typename allocator_type::pointer
-				pointer;
-			typedef typename allocator_type::size_type
-				size_type;
-			typedef typename ft::random_access_iterator<value_type>
-				iterator;
+			typedef	Alloc											allocator_type;
+			typedef	typename allocator_type::const_reference		const_reference;
+			typedef	typename allocator_type::pointer				pointer;
+			typedef typename allocator_type::size_type				size_type;
+			typedef typename ft::random_access_iterator<value_type>	iterator;
 
 		// CONSTRUCT DESTRUCT
-			vector(const allocator_type &alloc = allocator_type());
-			vector(std::initializer_list<value_type> lst);
-			vector(const ft::vector<value_type> &cp);
-			vector(size_t count);
-			~vector();
+			Vector(const allocator_type &alloc = allocator_type());
+			Vector(std::initializer_list<value_type> lst);
+			~Vector();
 
-			iterator	begin(void) const;
-			iterator	end(void) const;
+			iterator	begin(void);
+			iterator	end(void);
 //			iterator	rbegin();
 //			iterator	rend();
 //
-			void	assign(size_t count, const value_type &val);
-
-			template<class inputIt>
-			void	assign(inputIt first, inputIt last,
-					typename std::enable_if<!std::is_integral<inputIt>::value,
-								inputIt>::type* = nullptr);
+//			assign();
+			
 		// ELEMENT ACCESS
 			value_type	at(unsigned int n);
 			value_type	&front(void);
 			value_type	&back(void);
+			value_type	operator[](unsigned int n)
+				{ return this->at(n); }
 		// ---------------------------------------------------
 
 		
 		// CAPACITY
 			bool		empty(void);
-			size_type	size(void) const;
+			size_type	size(void);
 //			size_type	max_size(void); FIRST ==> finish iterator
 			void		reserve(size_t n);
-			size_type	capacity(void) const;
+			size_type	capacity(void);
 //			void		shrink_to_fit(void); CHECK si a faire ou non
 		// ---------------------------------------------------
 
@@ -73,13 +61,9 @@ namespace ft
 //			emplace_back();
 //			pop_back();
 //			resize();
-			void	swap(ft::vector<value_type> &other);
+			void	swap(ft::Vector<value_type> &other);
 //		--------------------------------------------------------
 //
-			value_type	&operator[](size_t n)
-			{
-				return (*(this->_start + n));
-			}
 //			operator=();
 //			operator==();
 //			operator!=();

@@ -1,7 +1,7 @@
 // CONSTRUCT DESTRUCT
 
 template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::vector(const allocator_type &alloc)
+ft::Vector<value_type, allocator_type>::Vector(const allocator_type &alloc)
 {
 	this->_alloc = alloc;
 	this->_start = NULL;
@@ -10,103 +10,46 @@ ft::vector<value_type, allocator_type>::vector(const allocator_type &alloc)
 }
 
 template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::~vector()
+ft::Vector<value_type, allocator_type>::~Vector()
 {
 	if (!this->_start)
 		return ;
 
-	for (pointer it = this->_start; it != this->_end; ++it)
+	pointer	it = this->_start;
+	for (pointer it = this->_start; it != this->_end; it++)
 		this->_alloc.destroy(it);
 	this->_alloc.deallocate(this->_start, this->capacity());
 }
 
 template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::vector(const ft::vector<value_type> &cp)
+ft::Vector<value_type, allocator_type>::Vector(std::initializer_list<value_type> lst)
 {
-	this->_start = this->_alloc.allocate(cp.size() + 1);
-	this->_end = this->_start + cp.size();
-	this->_end_capacity = this->_start + cp.capacity();
-
-	int	i = 0;
-	for (typename ft::vector<value_type>::iterator it = cp.begin(); it != cp.end(); ++it)
-	{
-		this->_alloc.construct(this->_start + i, *it);
-		i++;
-	}
-}
-
-template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::vector(std::initializer_list<value_type> lst)
-{
-	this->_start = this->_alloc.allocate(lst.size() + 1);
-	this->_end = this->_start + (lst.size());
-	this->_end_capacity = this->_end;
-
-	int	i = 0;
 	for (typename std::initializer_list<value_type>::iterator it = lst.begin();
 			it != lst.end(); it++)
-	{
-		this->_alloc.construct(this->_start + i, *it);
-		i++;
-	}
-}
-
-template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::vector(size_t count)
-{
-	this->_start = this->_alloc.allocate(count);
-	this->_end_capacity = this->_start + count;
-	this->_end = this->_end_capacity;
-}
-
-template<class value_type, class allocator_type>
-void	ft::vector<value_type, allocator_type>::assign(size_t count, const value_type &val)
-{
-	for (size_t i = 0; i < count; i++)
-	{
-		if (this->_start)
-			this->_alloc.destroy(this->_start + i);
-		this->_alloc.construct(this->_start + i, val);
-	}
-}
-
-template<class value_type, class allocator_type>
-template<class inputIt>
-void	ft::vector<value_type, allocator_type>::assign(inputIt first, inputIt last,
-	typename std::enable_if<!std::is_integral<inputIt>::value, inputIt>::type*)
-{
-	int	i = 0;
-	while ((first != last) && (this->_start + i != this->_end_capacity))
-	{
-		this->_alloc.destroy(this->_start + i);
-		this->_alloc.construct(this->_start + i, *first);
-		i++;
-		first++;
-	}
-	this->_end = this->_start + i;
+		this->push_back(*it);
 }
 
 // ELEMENT ACCESS -------------------------------------------------------------
 template<class value_type, class allocator_type>
-value_type	ft::vector<value_type, allocator_type>::at(unsigned int n)
+value_type	ft::Vector<value_type, allocator_type>::at(unsigned int n)
 {
 	if (this->size() < n)
 	{
 		out "NONONO Vector::at()" << std::endl;
-		exit(EXIT_FAILURE); // TO DO throw;
+		exit(1); // TO DO throw;
 	}
 	else 
 		return (*(this->_start + n));
 }
 
 template<class value_type, class allocator_type>
-value_type	&ft::vector<value_type, allocator_type>::front()
+value_type	&ft::Vector<value_type, allocator_type>::front()
 {
 	return (*this->_start);
 }
 
 template<class value_type, class allocator_type>
-value_type	&ft::vector<value_type, allocator_type>::back()
+value_type	&ft::Vector<value_type, allocator_type>::back()
 {
 	return (*(this->_end - 1));
 }
@@ -114,7 +57,7 @@ value_type	&ft::vector<value_type, allocator_type>::back()
 
 // CAPACITY ------------------------------------------------------------------
 template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::empty()
+bool	ft::Vector<value_type, allocator_type>::empty()
 {
 	if (this->_start == NULL || this->_start == this->_end - 1)
 		return (true);
@@ -123,13 +66,13 @@ bool	ft::vector<value_type, allocator_type>::empty()
 
 template<class value_type, class allocator_type>
 typename allocator_type::size_type
-	ft::vector<value_type, allocator_type>::size() const
+	ft::Vector<value_type, allocator_type>::size()
 {
 	return (this->_end - this->_start);
 }
 
 template<class value_type, class allocator_type>
-void	ft::vector<value_type, allocator_type>::reserve(size_t n)
+void	ft::Vector<value_type, allocator_type>::reserve(size_t n)
 {
 	if (this->_end_capacity && n <= this->capacity() - 1)
 		return ;
@@ -151,7 +94,7 @@ void	ft::vector<value_type, allocator_type>::reserve(size_t n)
 
 template<class value_type, class allocator_type>
 typename allocator_type::size_type
-	ft::vector<value_type, allocator_type>::capacity() const
+	ft::Vector<value_type, allocator_type>::capacity()
 {
 	return (this->_end_capacity - this->_start);
 }
@@ -159,7 +102,7 @@ typename allocator_type::size_type
 
 // MODIFIERS -------------------------------------------------------------------------
 template<class value_type, class allocator_type>
-void	ft::vector<value_type, allocator_type>::push_back(value_type val)
+void	ft::Vector<value_type, allocator_type>::push_back(value_type val)
 {
 	if (!this->_start)
 	{
@@ -173,7 +116,7 @@ void	ft::vector<value_type, allocator_type>::push_back(value_type val)
 		typename allocator_type::size_type	old_size = this->size();
 		pointer new_start = this->_alloc.allocate((old_size * 2) + 1);
 		
-		for (size_t i = 0; i < old_size; i++)
+		for (int i = 0; i < old_size; i++)
 		{
 			this->_alloc.construct(new_start + i, *(this->_start + i));
 			this->_alloc.destroy(this->_start + i);
@@ -192,7 +135,7 @@ void	ft::vector<value_type, allocator_type>::push_back(value_type val)
 }
 
 template<class value_type, class allocator_type>
-void	ft::vector<value_type, allocator_type>::clear()
+void	ft::Vector<value_type, allocator_type>::clear()
 {
 	if (!this->_start)
 		return ;
@@ -203,7 +146,7 @@ void	ft::vector<value_type, allocator_type>::clear()
 }
 
 template<class value_type, class allocator_type>
-void	ft::vector<value_type, allocator_type>::swap(ft::vector<value_type> &other)
+void	ft::Vector<value_type, allocator_type>::swap(ft::Vector<value_type> &other)
 {
 	std::swap(other._alloc, this->_alloc);
 	std::swap(other._start, this->_start);
@@ -214,14 +157,14 @@ void	ft::vector<value_type, allocator_type>::swap(ft::vector<value_type> &other)
 // ITERATOR STUFF -------------------------------------------------------------
 template<class value_type, class allocator_type>
 typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::begin(void) const
+	ft::Vector<value_type, allocator_type>::begin(void)
 {
 	return (this->_start);
 }
 
 template<class value_type, class allocator_type>
 typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::end(void) const
+	ft::Vector<value_type, allocator_type>::end(void)
 {
 	return (this->_end);
 }
