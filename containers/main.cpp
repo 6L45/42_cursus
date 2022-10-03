@@ -3,7 +3,7 @@
 #include <iterator>
 
 template<class T>
-void	ftVCout(ft::vector<T> &container, const char *delimiter = " ")
+void	ftVCout(std::vector<T> &container, const char *delimiter = " ")
 {
 	std::copy(container.begin(), container.end(),
 			std::ostream_iterator<T>(std::cout, delimiter));
@@ -12,6 +12,257 @@ void	ftVCout(ft::vector<T> &container, const char *delimiter = " ")
 
 int	main()
 {
+	/*
+	{
+		ft::vector<int>	a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		ft::vector<int> b(126);
+		ft::vector<int> c;
+
+		a.insert(a.begin() + 4, 5, -1);
+	}
+*/	{
+
+	//	SI Vector vide = segfault    vide ==> non initialisé ou cleared
+	//	SI pos out of rande error = free(): invalid pointer Abandon (core dumped)
+
+	//	DONC doit y'avoir données dans le vector ET la position doit être comprise dans size()
+
+
+		std::vector<int>	a = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+		std::vector<int> b(126);
+		std::vector<int> c(5);
+
+		out a.capacity() << nl;
+
+//		a.clear();
+
+		out a.capacity() << nl;
+		out a.size() << nl;
+
+		a.insert(a.begin() + 4, 5, -1);
+		b.insert(b.begin() + 10, 5, 42);
+		c.insert(c.begin() + 6, 5, 44);
+
+		out a.capacity() << nl;
+
+		ftVCout(a);
+		out nl << nl;
+		ftVCout(b);
+		out nl << nl;
+		ftVCout(c);
+	}
+/*
+
+	std::vector<int> a;
+	std::vector<int> b = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+	std::copy(b.begin(), b.end(), a.begin());
+*/
+/*
+	{
+		ft::vector<int> e1;
+		ft::vector<int> e2;
+		ft::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+		ft::vector<int> ab = {1, 2, 3, 4, 4, 6, 7, 8, 9};
+		ft::vector<int> b = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+		ft::vector<int> c = a;
+
+		out "FT VECTOR ------ " << nl;
+
+		if (e1 <= e2)
+			out "e1 <= e2" << nl;
+		if (e2 <= e1)
+			out "e2 <= e1" << nl;
+		if (a <= e1)
+			out "a <= e1" << nl;
+		if (e1 <= a)
+			out "e1 <= a" << nl;
+		if (a <= b)
+			out  "a <= b" << nl;
+		if (b <= a)
+			out "b <= a" << nl;
+		if (a <= ab)
+			out "a <= ab" << nl;
+		if (ab <= a)
+			out "ab <= a" << nl;
+		if (a <= c)
+			out "a <= c" << nl;
+		if (c <= a)
+			out "c <= a" << nl;
+	}	
+
+	{
+		std::vector<int> e1;
+		std::vector<int> e2;
+		std::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+		std::vector<int> ab = {1, 2, 3, 4, 4, 6, 7, 8, 9};
+		std::vector<int> b = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+		std::vector<int> c = a;
+
+		out "STD VECTOR ------ " << nl;
+
+		if (e1 <= e2)
+			out "e1 <= e2" << nl;
+		if (e2 <= e1)
+			out "e2 <= e1" << nl;
+		if (a <= e1)
+			out "a <= e1" << nl;
+		if (e1 <= a)
+			out "e1 <= a" << nl;
+		if (a <= b)
+			out  "a <= b" << nl;
+		if (b <= a)
+			out "b <= a" << nl;
+		if (a <= ab)
+			out "a <= ab" << nl;
+		if (ab <= a)
+			out "ab <= a" << nl;
+		if (a <= c)
+			out "a <= c" << nl;
+		if (c <= a)
+			out "c <= a" << nl;
+	}
+*/	/*
+	{
+		ft::vector<int> vct(5);
+		ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+		std::cout << "len: " << (ite - it) << std::endl;
+		for (; it != ite; ++it)
+			*it = (ite - it);
+
+		it = vct.begin();
+
+		ft::vector<int> vct_range(it, --(--ite));
+		for (int i = 0; it != ite; ++it)
+			*it = ++i * 5;
+
+		it = vct.begin();
+		
+		ft::vector<int> vct_copy(vct);
+		for (int i = 0; it != ite; ++it)
+			*it = ++i * 7;
+		
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+		vct_copy.push_back(42);
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+		vct_copy.push_back(21);
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+
+		std::cout << "\t-- PART ONE --" << std::endl;
+
+		vct = vct_copy;
+		vct_copy = vct_range;
+		vct_range.clear();
+	}
+	{
+		std::vector<int> vct(5);
+		std::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+		std::cout << "len: " << (ite - it) << std::endl;
+		for (; it != ite; ++it)
+			*it = (ite - it);
+
+		it = vct.begin();
+		
+		std::vector<int> vct_range(it, --(--ite));
+		for (int i = 0; it != ite; ++it)
+			*it = ++i * 5;
+
+		it = vct.begin();
+
+		std::vector<int> vct_copy(vct);
+		for (int i = 0; it != ite; ++it)
+			*it = ++i * 7;
+		
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+		vct_copy.push_back(42);
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+		vct_copy.push_back(21);
+		out "vcp_copy size : " << vct_copy.size() << " vct_copy capacity : " << vct_copy.capacity() << nl; 
+		out "vcp_range size : " << vct_range.size() << " vct_range capacity : " << vct_range.capacity() << nl;
+
+		std::cout << "\t-- PART ONE --" << std::endl;
+
+		vct = vct_copy;
+		vct_copy = vct_range;
+		vct_range.clear();
+	}
+
+	std::cout << "\t-- PART TWO --" << std::endl;
+*/
+	/*
+	ft::vector<int> vct(5);
+	ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
+
+	std::cout << "len: " << (ite - it) << std::endl;
+//	for (; it != ite; ++it)
+		*it = (ite - it); */
+	/*
+	ft::vector<int> a;
+	std::vector<int> b;
+
+	out b[0] << nl;
+*/
+/*
+	a.assign(3, 42);
+
+	out a[2] << nl;
+
+	a.assign(b.begin(), b.begin() + 5);
+	out a.capacity() << " " << a.size() << nl;
+
+
+	//a.assign(3, 42);
+
+*/
+
+/*
+	ft::vector<int> a = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	ft::vector<int> b;
+
+	b.push_back(0);
+	b.push_back(1);
+	b.push_back(2);
+	b.push_back(3);
+	b.push_back(4);
+	b.push_back(5);
+	b.push_back(6);
+	b.push_back(8);
+	b.push_back(9);
+
+	ft::vector<int> c(30);
+
+	std::copy(a.begin(), a.end(), c.begin());
+
+	ft::vector<int>::iterator	test = b.end();
+	const ft::vector<int>::iterator	test2 = b.end();
+	ft::vector<int>::iterator	test3 = b.begin();
+	
+	if (test <= test2)	
+		out "la" << nl;
+
+	ft::random_access_iterator<int>::difference_type	haha = test3 < test2;
+	out haha << nl;
+
+	ft::vector<int>::iterator hehe = a.begin() + haha;
+	out *hehe << nl;
+
+
+	out "---------------------------------------------" << nl;
+
+	for (ft::vector<int>::iterator it = c.begin(); it != c.end(); ++it)
+	{
+		out  *it << nl;
+		out it << nl;
+	}
+*/
+/*
 	ft::vector<std::string>
 		a = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
 	ft::vector<std::string>
@@ -52,7 +303,7 @@ int	main()
 	for (std::vector<int>::iterator it = wx.begin(); it != wx.end(); ++it)
 		out "-[" << *it << "]- ";
 	out nl;
-
+*/
 /*
 	a.push_back("zero");
 	a.push_back("one");
