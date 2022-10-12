@@ -11,18 +11,12 @@ ft::vector<value_type, allocator_type>::vector(const allocator_type &alloc)
 template<class value_type, class allocator_type>
 ft::vector<value_type, allocator_type>::vector(const ft::vector<value_type> &cp)
 {
-	if (cp == *this)
-		return ;
-	this->_start = this->_alloc.allocate(cp.size() + 1);
-	this->_end = this->_start + cp.size();
-	this->_end_capacity = this->_start + cp.capacity();
-
-	int	i = 0;
-	for (typename ft::vector<value_type>::iterator it = cp.begin(); it != cp.end(); ++it)
-	{
-		this->_alloc.construct(this->_start + i, *it);
-		i++;
-	}
+	this->_alloc = cp._alloc;
+	this->_start = nullptr;
+	this->_end = nullptr;
+	this->_end_capacity = nullptr;
+	
+	this->insert(this->begin(), cp.begin(), cp.end());
 }
 
 template<class value_type, class allocator_type>
@@ -42,17 +36,9 @@ ft::vector<value_type, allocator_type>::vector(std::initializer_list<value_type>
 }
 
 template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::vector(size_t count)
-{
-	this->_start = this->_alloc.allocate(count + 1);
-	this->_end_capacity = this->_start + count;
-	this->_end = this->_end_capacity;
-}
-
-template<class value_type, class allocator_type>
 template<class inputIt>
 ft::vector<value_type, allocator_type>::vector(inputIt first, inputIt last,
-	typename std::enable_if<!std::is_integral<inputIt>::value, inputIt>::type*)
+	typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
 {
 	size_t	input_size = last - first;
 
@@ -61,17 +47,6 @@ ft::vector<value_type, allocator_type>::vector(inputIt first, inputIt last,
 	this->_end_capacity = this->_end;
 
 	std::copy(first, last, this->_start);
-}
-
-template<class value_type, class allocator_type>
-ft::vector<value_type, allocator_type>::~vector()
-{
-	if (!this->_start)
-		return;
-	
-	for (pointer bgin = this->_start; bgin != this->_end; bgin++)
-		this->_alloc.destroy(bgin);
-	this->_alloc.deallocate(this->_start, this->capacity());
 }
 
 template<class value_type, class allocator_type>
@@ -93,9 +68,35 @@ ft::vector<value_type, allocator_type>	&ft::vector<value_type, allocator_type>::
 	return (*this);
 }
 
+template<class value_type, class allocator_type>
+ft::vector<value_type, allocator_type>::vector(const size_t count,
+												value_type val, const allocator_type &alloc)
+{
+	this->_alloc = alloc;
+	this->_start = this->_alloc.allocate(count + 1);
+	this->_end = this->_start + count;
+	this->_end_capacity = this->_end;
+
+	for (size_t i = 0; i < count; i++)
+		this->_alloc.construct(this->_start + i, val);
+}
+
+template<class value_type, class allocator_type>
+ft::vector<value_type, allocator_type>::~vector()
+{
+	if (!this->_start)
+		return;
+	
+	for (pointer bgin = this->_start; bgin != this->_end; bgin++)
+		this->_alloc.destroy(bgin);
+
+	this->_alloc.deallocate(this->_start, this->capacity() - 3);
+}
+
 // ELEMENT ACCESS -------------------------------------------------------------
 template<class value_type, class allocator_type>
-value_type	&ft::vector<value_type, allocator_type>::at(const unsigned int n) const
+typename	allocator_type::reference	ft::vector<value_type, allocator_type>::at
+																		(const unsigned int n)
 {
 	if (this->size() < n)
 		throw std::out_of_range ("");
@@ -104,22 +105,58 @@ value_type	&ft::vector<value_type, allocator_type>::at(const unsigned int n) con
 }
 
 template<class value_type, class allocator_type>
-value_type	&ft::vector<value_type, allocator_type>::front() const
+typename	allocator_type::reference	ft::vector<value_type, allocator_type>::front()
 {
 	return (*this->_start);
 }
 
 template<class value_type, class allocator_type>
-value_type	&ft::vector<value_type, allocator_type>::back() const
+typename	allocator_type::reference	ft::vector<value_type, allocator_type>::back()
 {
 	return (*(this->_end - 1));
+}
+
+template<class value_type, class allocator_type>
+typename	allocator_type::reference	ft::vector<value_type, allocator_type>::operator[]
+																				(const size_t n)
+{
+	return (*(this->_start + n));
+}
+
+template<class value_type, class allocator_type>
+typename	allocator_type::const_reference	ft::vector<value_type, allocator_type>::at
+																		(const unsigned int n) const
+{
+	if (this->size() < n)
+		throw std::out_of_range ("");
+	else 
+		return (*(this->_start + n));
+}
+
+template<class value_type, class allocator_type>
+typename	allocator_type::const_reference	ft::vector<value_type, allocator_type>::front() const
+{
+	return (*this->_start);
+}
+
+template<class value_type, class allocator_type>
+typename	allocator_type::const_reference	ft::vector<value_type, allocator_type>::back() const
+{
+	return (*(this->_end - 1));
+}
+
+template<class value_type, class allocator_type>
+typename	allocator_type::const_reference	ft::vector<value_type, allocator_type>::operator[]
+																					(const size_t n) const
+{
+	return (*(this->_start + n));
 }
 
 // CAPACITY ------------------------------------------------------------------
 template<class value_type, class allocator_type>
 bool	ft::vector<value_type, allocator_type>::empty() const
 {
-	if (this->_start == NULL || this->_start == this->_end - 1)
+	if (this->_start == NULL || this->_start == this->_end - 1 || !this->size())
 		return (true);
 	return (false);
 }
@@ -140,7 +177,7 @@ void	ft::vector<value_type, allocator_type>::reserve(size_t n)
 	typename allocator_type::size_type 	old_size = this->size();
 	pointer	new_start = this->_alloc.allocate(n + 1);
 
-	for (int i = 0; i < old_size; i++)
+	for (size_t i = 0; i < old_size; i++)
 	{
 		this->_alloc.construct(new_start + i, *(this->_start + i));
 		this->_alloc.destroy(this->_start + i);
@@ -148,7 +185,7 @@ void	ft::vector<value_type, allocator_type>::reserve(size_t n)
 	if (this->_start)
 		this->_alloc.deallocate(this->_start, this->capacity());
 	this->_start = new_start;
-	this->_end = this->_start + old_size + 1;
+	this->_end = this->_start + old_size;
 	this->_end_capacity = this->_start + n;
 }
 
@@ -192,7 +229,7 @@ void	ft::vector<value_type, allocator_type>::assign(size_t count, const value_ty
 template<class value_type, class allocator_type>
 template<class inputIt>
 void	ft::vector<value_type, allocator_type>::assign(inputIt first, inputIt last,
-	typename std::enable_if<!std::is_integral<inputIt>::value, inputIt>::type*)
+				typename ft::enable_if<!ft::is_integral<inputIt>::value,inputIt>::type *)
 {
 	this->clear();
 
@@ -229,60 +266,157 @@ typename ft::random_access_iterator<value_type>
 	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
 													size_t n, const value_type &val)
 {
-	typename ft::random_access_iterator<value_type>	bginReplace = pos;
+	const size_t	dist = pos - this->_start;
+	size_t			p = 0;
 
-	if (!this->capacity())
+	if (this->size() + n > this->capacity())
 	{
-		this->_start = this->_alloc.allocate(n + 1);
+		ft::vector<value_type>	tmp(this->size() + n);
 
-		for (size_t i = 0; i < n; i++, bginReplace++)
-			this->_alloc.construct(bginReplace, val);
-		
-		this->_end = this->_start + n;
-		this->_end_capacity = this->_end;
-	}
-	else if (this->size() + n > this->capacity())
-	{
-		size_t					offset = pos - this->_start;
-		ft::vector<value_type>	tmp(this->capacity());
-		
-		std::copy(this->begin(), this->end(), tmp.begin());
-		this->clear();
-		this->_alloc.deallocate(this->_start, this->capacity());
+		for (size_t i = 0; i < dist; i++, p++)
+			tmp[p] = *(this->_start + i);
+		for (size_t i = 0; i < n; i++, p++)
+			tmp[p] = val;
+		for (size_t i = 0; this->begin() + dist + i != this->end() ; i++, p++)
+			tmp[p] = *(this->begin() + dist + i);
 
-		this->_start = this->_alloc.allocate(tmp.capacity() + n + 1);
-		this->_end = this->_start + tmp.size() + n;
-		this->_end_capacity = this->_end;
-		std::copy(tmp.begin(), tmp.begin() + offset, this->_start);
-
-		size_t	i = 0;
-		while(i < n)
-		{
-			this->_alloc.construct(this->_start + i, val);
-			i++;
-		}
-
-		std::copy(tmp.begin() + offset, tmp.end(), this->begin + offset + i);
+		this->swap(tmp);
+	
+		return (this->_start + dist);
 	}
 	else
 	{
-		ft::vector<value_type> tmp(this->capacity() - pos);
-		std::copy(pos, this->_end, tmp.begin());
+		ft::vector<value_type>	tmp(this->size() - dist);
 
-		while (bginReplace != this->_end)
+		for (size_t i = 0; this->_start + dist + i < this->_end; i++, p++)
+			tmp[p] = *(this->_start + dist + i);
+
+		for (size_t i = 0; i < n; i++)
 		{
-			this->_alloc.destroy(bginReplace);
-			bginReplace++;
+			this->_alloc.destroy(this->_start + dist + i);
+			if (i < n)
+				this->_alloc.construct(this->_start + dist + i, val);
+			this->_end = this->_start + dist + i + 1;
 		}
-
-		bginReplace = pos;
-		for (size_t i = 0; i < n; i++, bginReplace++)
-			this->_alloc.construct(bginReplace, val);
-
-		std::copy(tmp.begin(), tmp.end(), bginReplace);	
-		this->_end += n;
+		for (size_t i = 0; tmp.begin() + i < tmp.end(); i++)
+			this->push_back(*(tmp.begin() + i));
+		return (pos);
 	}
+}
+
+template<class value_type, class allocator_type>
+template <class inputIt>
+void	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
+														inputIt first, inputIt last, typename ft::enable_if
+														<!ft::is_integral<inputIt>::value, inputIt>::type*)
+{
+	size_t	dist = pos - this->_start;
+	size_t	offset = last - first;
+	size_t	p = 0;
+
+	if (this->size() + offset > this->capacity())
+	{
+		ft::vector<value_type>	tmp(this->size() + offset);
+		for (size_t i = 0; i < dist; i++, p++)
+			tmp[p] = *(this->_start + i);
+		for (;first != last; first++, p++)
+			tmp[p] = *first;
+		for (size_t i = 0; this->_start + dist + i < this->_end; i++, p++)
+			tmp[p] = *(this->_start + dist + i);
+		
+		this->swap(tmp);
+	}
+	else
+	{
+		ft::vector<value_type>	tmp(this->size() - dist);
+
+		for (size_t i = 0; this->_start + dist + i < this->_end; i++, p++)
+			tmp[p] = *(this->_start + dist + i);
+
+		for (size_t i = 0; first < last; i++, first++)
+		{
+			this->_alloc.destroy(this->_start + dist + i);
+			if (first < last)
+				this->_alloc.construct(this->_start + dist + i, *first);
+			this->_end = this->_start + dist + i + 1;
+		}
+		for (size_t i = 0; tmp.begin() + i < tmp.end(); i++)
+			this->push_back(*(tmp.begin() + i));
+	}
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<value_type>
+	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
+													const value_type &val)
+{
+	return (this->insert(pos, 1, val));
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<value_type>
+	ft::vector<value_type, allocator_type>::erase(typename ft::random_access_iterator<value_type> pos)
+{
+	size_t	i = 0;
+	size_t	dist = pos - this->_start;
+
+	for (; this->_start + dist + i < this->_end; i++)
+	{
+		this->_alloc.destroy(this->_start + dist + i);
+		if (this->_start + dist + i + 1 != this->_end)
+			this->_alloc.construct(this->_start + dist + i, *(this->_start + dist + i + 1));
+	}
+	this->_end--; 
 	return (pos);
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<value_type>
+	ft::vector<value_type, allocator_type>::erase(typename ft::random_access_iterator<value_type> first,
+													typename ft::random_access_iterator<value_type> last)
+{
+	size_t	i = 0;
+	size_t	j = 0;
+	size_t	distbegin = first - this->_start;
+	size_t	distend = last - this->_start;
+
+	for (; this->_start + distbegin + i < this->_end; i++)
+	{
+		this->_alloc.destroy(this->_start + distbegin + i);
+		if (this->_start + distend + j != this->_end)
+		{
+			this->_alloc.construct(this->_start + distbegin + i, *(this->_start + distend + j));
+			j++;
+		}
+	}
+	this->_end -= last - first; 
+	return (first);
+}
+
+template<class value_type, class allocator_type>
+void	ft::vector<value_type, allocator_type>::pop_back(void)
+{
+	if (this->_end == this->_start)
+		return ;
+	this->_alloc.destroy(&this->back());
+	this->_end--;
+}
+
+template<class value_type, class allocator_type>
+void	ft::vector<value_type, allocator_type>::resize(size_t n, value_type val)
+{
+	if (n > this->max_size())
+		throw(std::length_error(""));
+	else if (n < this->size())
+	{
+		while (this->size() > n)
+		{
+			this->_end--;
+			this->_alloc.destroy(this->_end);
+		}
+	}
+	else
+		this->insert(this->end(), n - this->size(), val);
 }
 
 template <class value_type, class allocator_type>
@@ -328,104 +462,59 @@ void	ft::vector<value_type, allocator_type>::swap(ft::vector<value_type> &other)
 }
 
 // ITERATOR STUFF -------------------------------------------------------------
+
 template<class value_type, class allocator_type>
 typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::begin(void) const
+	ft::vector<value_type, allocator_type>::begin(void)
 {
 	return (this->_start);
 }
 
 template<class value_type, class allocator_type>
 typename ft::random_access_iterator<value_type>
+	ft::vector<value_type, allocator_type>::end(void)
+{
+	return (this->_end);
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<const value_type>
+	ft::vector<value_type, allocator_type>::begin(void) const
+{
+	return (this->_start);
+}
+
+template<class value_type, class allocator_type>
+typename ft::random_access_iterator<const value_type>
 	ft::vector<value_type, allocator_type>::end(void) const
 {
 	return (this->_end);
 }
 
-// OVERLOADS --------------------------------------------------------------------
 template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator==(const ft::vector<value_type> &cmp) const
+typename ft::reverse_iterator<value_type>
+	ft::vector<value_type, allocator_type>::rbegin(void)
 {
-	if (this->size() != cmp.size())
-		return (false);
-
-	for (typename ft::vector<value_type>::iterator thisIt = this->begin(), cmpIt = cmp.begin();
-			thisIt != this->end() && cmpIt != cmp.end();
-			thisIt++, cmpIt++)
-		{
-			if (*thisIt != *cmpIt)
-				return (false);
-		}
-
-		return (true);
+	return (this->_end);
 }
 
 template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator!=(const ft::vector<value_type> &cmp) const
+typename ft::reverse_iterator<value_type>
+	ft::vector<value_type, allocator_type>::rend(void)
 {
-	return (!(*this == cmp));
+	return (this->_start);
 }
 
 template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator<(const ft::vector<value_type> &cmp) const
+typename ft::reverse_iterator<const value_type>
+	ft::vector<value_type, allocator_type>::rbegin(void) const
 {
-	typename ft::vector<value_type>::iterator thisIt = this->begin();
-	typename ft::vector<value_type>::iterator cmpIt = cmp.begin();
-
-	if (thisIt == nullptr || cmpIt == nullptr)
-	{
-		if (thisIt == nullptr && cmpIt != nullptr)
-			return (true);
-		else
-			return (false);
-	}
-	else
-	{
-		while (thisIt != this->end() && cmpIt != cmp.end() && *thisIt == *cmpIt)
-		{
-			thisIt++;
-			cmpIt++;
-		}
-		return (*thisIt < *cmpIt);
-	}
+	return (this->_end);
 }
 
 template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator<=(const ft::vector<value_type> &cmp) const
+typename ft::reverse_iterator<const value_type>
+	ft::vector<value_type, allocator_type>::rend(void) const
 {
-	typename ft::vector<value_type>::iterator thisIt = this->begin();
-	typename ft::vector<value_type>::iterator cmpIt = cmp.begin();
-
-	if (thisIt == nullptr || cmpIt == nullptr)
-	{
-		if ((thisIt == nullptr && cmpIt != nullptr) 
-			|| (thisIt == nullptr && cmpIt == nullptr))
-			return (true);
-		else
-			return (false);
-	}
-	else
-	{
-		while (thisIt != this->end() && cmpIt != cmp.end() && *thisIt == *cmpIt)
-		{
-			thisIt++;
-			cmpIt++;
-		}
-		return (*thisIt <= *cmpIt);
-	}
-	
-}
-
-
-template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator>(const ft::vector<value_type> &cmp) const
-{
-	return (!(*this <= cmp));
-}
-
-
-template<class value_type, class allocator_type>
-bool	ft::vector<value_type, allocator_type>::operator>=(const ft::vector<value_type> &cmp) const
-{
-	return (!(*this < cmp));
+	return (this->_start);
 }
