@@ -24,27 +24,18 @@ bool	operator<(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
 	typename ft::vector<T, Allocator>::const_iterator vecIt = vec.begin();
 	typename ft::vector<T, Allocator>::const_iterator cmpIt = cmp.begin();
 
-	if (vecIt == nullptr || cmpIt == nullptr)
+	while (vecIt != vec.end() - 1)
 	{
-		if ((vecIt == nullptr && cmpIt == nullptr) 
-			|| (vecIt == nullptr && cmpIt != nullptr))
-			return (true);
-		else
+		if (cmpIt == cmp.end())
 			return (false);
+		else if (*vecIt != *cmpIt)
+			break;
+		vecIt++;
+		cmpIt++;
 	}
-	else
-	{
-		while (vecIt != vec.end() && *vecIt == *cmpIt)
-		{
-			if (cmpIt == cmp.end())
-				return (false);
-			vecIt++;
-			cmpIt++;
-		}
-		if (*vecIt == *cmpIt && vec.size() != cmp.size())
-			return (vec.size() < cmp.size());
-		return (*vecIt < *cmpIt);
-	}
+	if (*vecIt == *cmpIt && vec.size() != cmp.size())
+		return (vec.size() < cmp.size());
+	return (*vecIt < *cmpIt);
 }
 
 template<class T, class Allocator>
@@ -53,27 +44,18 @@ bool	operator<=(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
 	typename ft::vector<T, Allocator>::const_iterator vecIt = vec.begin();
 	typename ft::vector<T, Allocator>::const_iterator cmpIt = cmp.begin();
 
-	if (vecIt == nullptr || cmpIt == nullptr)
+	while (vecIt != vec.end() - 1)
 	{
-		if ((vecIt == nullptr && cmpIt == nullptr) 
-			|| (vecIt == nullptr && cmpIt != nullptr))
-			return (true);
-		else
+		if (cmpIt == cmp.end())
 			return (false);
+		else if (*vecIt != *cmpIt)
+			break;
+		vecIt++;
+		cmpIt++;
 	}
-	else
-	{
-		while (vecIt != vec.end() && *vecIt == *cmpIt)
-		{
-			if (cmpIt == cmp.end())
-				return (false);
-			vecIt++;
-			cmpIt++;
-		}
-		if (*vecIt == *cmpIt && vec.size() != cmp.size())
-			return (vec.size() < cmp.size());
-		return (*vecIt <= *cmpIt);
-	}
+	if (*vecIt == *cmpIt && vec.size() != cmp.size())
+		return (vec.size() < cmp.size());
+	return (*vecIt <= *cmpIt);
 }
 
 template<class T, class Allocator>

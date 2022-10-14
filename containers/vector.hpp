@@ -3,60 +3,20 @@
 
 # include <memory>
 # include <iostream>
+# include <iterator>
+# include <stdlib.h>
+//# include <type_traits>
+
+# include "enable_if.hpp"
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 # include "bidirectional_iterator.hpp"
-# include <iterator>
-# include <type_traits>
-# include <stdlib.h>
 
 # define out	std::cout <<
 # define nl	std::endl
 
 namespace ft
 {
-	template <bool Cond, class T = void>
-	struct enable_if {};
-	template <class T>
-	struct enable_if<true, T>
-		{ typedef T type; };
-	template <bool is_integral, typename T>
-	struct is_integral_res
-	{
-		typedef T type;
-		static const bool value = is_integral;
-	};
-
-	template <typename>
-	struct is_integral_type : public is_integral_res<false, bool> {};
-	template <>
-	struct is_integral_type<bool> : public is_integral_res<true, bool> {};
-	template <>
-	struct is_integral_type<char> : public is_integral_res<true, char> {};
-	template <>
-	struct is_integral_type<signed char> : public is_integral_res<true, signed char> {};
-	template <>
-	struct is_integral_type<short int> : public is_integral_res<true, short int> {};
-	template <>
-	struct is_integral_type<int> : public is_integral_res<true, int> {};
-	template <>
-	struct is_integral_type<long int> : public is_integral_res<true, long int> {};
-	template <>
-	struct is_integral_type<long long int> : public is_integral_res<true, long long int> {};
-	template <>
-	struct is_integral_type<unsigned char> : public is_integral_res<true, unsigned char> {};
-	template <>
-	struct is_integral_type<unsigned short int> : public is_integral_res<true, unsigned short int> {};
-	template <>
-	struct is_integral_type<unsigned int> : public is_integral_res<true, unsigned int> {};
-	template <>
-	struct is_integral_type<unsigned long int> : public is_integral_res<true, unsigned long int> {};
-	template <>
-	struct is_integral_type<unsigned long long int> : public is_integral_res<true, unsigned long long int> {};
-
-	template <typename T>
-	struct is_integral : public is_integral_type<T> {};
-
 	template<class T, class Alloc = std::allocator<T> >
 	class vector
 	{
@@ -76,26 +36,15 @@ namespace ft
 			template<class inputIt>
 			vector(inputIt first, inputIt last,
 					typename ft::enable_if<!ft::is_integral<inputIt>::value,
-											inputIt>::type * = nullptr);
+											inputIt>::type * = NULL);
 			vector(const allocator_type &alloc = allocator_type());
-			vector(std::initializer_list<value_type> lst);
+//			vector(std::initializer_list<value_type> lst);
 			vector(const ft::vector<value_type> &cp);
 			vector(const size_t count, value_type val = value_type(),
 					const allocator_type &alloc = allocator_type());
 			vector	&operator=(const ft::vector<value_type, allocator_type> &cpy);
 
 			virtual	~vector();
-
-		// ITERATORS
-			iterator begin(void);
-			iterator end(void);
-			const_iterator begin(void) const;
-			const_iterator end(void) const;
-
-			reverse_iterator rbegin(void);
-			reverse_iterator rend(void);
-			const_reverse_iterator rend(void) const;
-			const_reverse_iterator rbegin(void) const;
 
 		// ELEMENT ACCESS
 			reference			at(const unsigned int n);
@@ -119,7 +68,7 @@ namespace ft
 			template<class inputIt>
 			void				assign(inputIt first, inputIt last,
 										typename ft::enable_if<!ft::is_integral<inputIt>::value,
-																inputIt>::type * = nullptr);
+																inputIt>::type * = NULL);
 			void				assign(size_t count, const value_type &val);
 			void				clear();
 			iterator			insert(iterator pos, const value_type &val);
@@ -127,13 +76,24 @@ namespace ft
 			template<class inputIt>
 			void				insert(iterator pos, inputIt first, inputIt last,
 									typename ft::enable_if<!ft::is_integral<inputIt>::value,
-															inputIt>::type * = nullptr);
+															inputIt>::type * = NULL);
 			iterator			erase(iterator pos);
 			iterator			erase(iterator first, iterator last);
 			void				push_back(value_type val);
 			void				pop_back();
 			void				resize(size_t n, value_type val = value_type());
 			void				swap(ft::vector<value_type> &other);
+
+		// ITERATORS
+			iterator begin(void);
+			iterator end(void);
+			const_iterator begin(void) const;
+			const_iterator end(void) const;
+
+			reverse_iterator rbegin(void);
+			reverse_iterator rend(void);
+			const_reverse_iterator rend(void) const;
+			const_reverse_iterator rbegin(void) const;
 
 		private :
 			allocator_type	_alloc;
@@ -165,5 +125,9 @@ namespace ft
 } // namespace ft
 
 # include "vector.ipp"
+# include "vector_element_access.ipp"
+# include "vector_capacity.ipp"
+# include "vector_modifiers.ipp"
+# include "vector_iterators_ret.ipp"
 
 #endif

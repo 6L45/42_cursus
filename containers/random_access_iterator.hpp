@@ -17,7 +17,7 @@ namespace ft
 			typedef ft::random_access_iterator_tag	iterator_category;
 
 		// CONSTRUCT DESTRUCT COPY EQUAL----------------------------------------------------
-			random_access_iterator(void) : _elem(nullptr) {}
+			random_access_iterator(void) : _elem(NULL) {}
 			random_access_iterator(pointer elem) : _elem(elem) {}
 			random_access_iterator(const random_access_iterator &src) : _elem(src._elem) {}
 

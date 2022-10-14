@@ -17,7 +17,7 @@ namespace ft
 			typedef ft::bidirectional_iterator_tag	iterator_category;
 
 		// CONSTRUCT DESTRUCT COPY EQUAL----------------------------------------------------
-			bidirectional_iterator(void) : _elem(nullptr) {}
+			bidirectional_iterator(void) : _elem(NULL) {}
 			bidirectional_iterator(pointer elem) : _elem(elem) {}
 			bidirectional_iterator(const bidirectional_iterator &src) : _elem(src._elem) {}
 

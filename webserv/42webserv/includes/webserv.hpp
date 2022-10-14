@@ -17,7 +17,6 @@ class Webserv
 		struct	sockaddr_in	_address;
 		int					_sock;
 		int					_confd;
-
 		int					_domain;
 		int					_service;
 		int					_protocol;
@@ -26,8 +25,6 @@ class Webserv
 
 		char				_buff[MAXLINE + 1];
 		char				*_recvline;
-
-		std::vector<int>	_test;
   
 		// private methods
 		void	print_request_client();

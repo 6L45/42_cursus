@@ -156,8 +156,16 @@ class foo {
 		bool		_verbose;
 };
 
+#include "map.hpp"
+
 int main(void)
 {
+	/*
+	ft::vector<int>	a(44);
+	typename ft::vector<int>::iterator it = a.begin();
+
+	out it << nl;
+*/
 	/*
 	{
 		ft::vector<int> vct(4);

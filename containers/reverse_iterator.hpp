@@ -18,7 +18,7 @@ namespace ft
 			typedef	ft::reverse_iterator_tag	iterator_category;
 
 		// CONSTRUCT DESTRUCT COPY EQUAL ----------------------------------------------
-			reverse_iterator() : _elem(nullptr) {};
+			reverse_iterator() : _elem(NULL) {};
 			reverse_iterator(pointer elem) : _elem(elem) {}
 			reverse_iterator(const reverse_iterator &src) : _elem(src.base()) {}
 			reverse_iterator(const ft::random_access_iterator<value_type> &it) : _elem(it.base()) {}
