@@ -10,7 +10,6 @@
 # include "enable_if.hpp"
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
-# include "bidirectional_iterator.hpp"
 
 # define out	std::cout <<
 # define nl	std::endl
@@ -38,7 +37,7 @@ namespace ft
 					typename ft::enable_if<!ft::is_integral<inputIt>::value,
 											inputIt>::type * = NULL);
 			vector(const allocator_type &alloc = allocator_type());
-//			vector(std::initializer_list<value_type> lst);
+//			vector(std::initializer_list<value_type> lst); <--- not c++98
 			vector(const ft::vector<value_type> &cp);
 			vector(const size_t count, value_type val = value_type(),
 					const allocator_type &alloc = allocator_type());
