@@ -1,8 +1,10 @@
 #include "vector.hpp"
 #include "stack.hpp"
+#include "map.hpp"
 #include <vector>
 #include <iterator>
 #include <stack>
+#include "map.hpp"
 
 template <typename Ite_1, typename Ite_2>
 void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
@@ -156,10 +158,11 @@ class foo {
 		bool		_verbose;
 };
 
-#include "map.hpp"
-
 int main(void)
 {
+
+	ft::map<std::string, int> a;
+
 	/*
 	ft::vector<int>	a(44);
 	typename ft::vector<int>::iterator it = a.begin();

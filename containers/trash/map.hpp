@@ -13,10 +13,13 @@
 # include "reverse_iterator.hpp"
 //# include "binary_search_tree.hpp"
 
-enum COLOR
+enum node_status
 {
-	RED,
-	BLACK
+	ROOT = 1,
+	RIGHT,
+	LEFT,
+	BLACK,
+	RED
 };
 
 namespace ft
@@ -60,13 +63,16 @@ namespace ft
 
 	template<class T1, class T2>
 	bool	operator==(const ft::pair<T1, T2> &cmped, const ft::pair<T1, T2> &cmping)
-		{ return (cmped.first == cmping.first && cmped.second == cmped.second); }
+	{
+		return (cmped.first == cmping.first && cmped.second == cmped.second);
+	}
+
 
 	template<class Key, class T, class Compare = std::less<Key>,
 			class Alloc = std::allocator<std::pair<const Key, T> > >
-
 	class map
 	{
+
 		 public :
 			typedef T 														mapped_type;
 			typedef Key														key_type;
@@ -84,6 +90,7 @@ namespace ft
 			typedef typename ft::reverse_iterator<value_type>				reverse_iterator;
 			typedef typename ft::reverse_iterator<const value_type>			const_reverse_iterator;
 
+
 			typedef typename ft::Binary_search_tree<value_type, key_compare>::iterator iterator;
 			typedef typename ft::Binary_search_tree<value_type, key_compare>::const_iterator const_iterator;
 			typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
@@ -91,18 +98,18 @@ namespace ft
 */
 
 		// CONSTRUCT DESTRUCT
-/*			template<class inputIt>
+			template<class inputIt>
 			map(inputIt first, inputIt last,
 				const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type * = NULL);
-*/			map(const key_compare &comp = key_compare(),
+			map(const key_compare &comp = key_compare(),
 									const allocator_type &alloc = allocator_type());
-/*			map(const ft::map<Key, T> &cp);
+			map(const ft::map<Key, T> &cp);
 
 			map operator=(const ft::map<Key, T> &cpy);
 
-*/			virtual ~map() {};
-/*
+			virtual ~map();
+		/*
 		//ELEMENT ACCESS
 			reference			at();
 			const_reference		operator[]();
@@ -114,14 +121,14 @@ namespace ft
 
 		//MODIFIERS
 			void				clear();
-			iterator*/void			insert(value_type val);
-/*			iterator*/void			erase(value_type val);
-/*			void				swap();
+			iterator			insert();
+			iterator			erase();
+			void				swap();
 
 		//LOOKUP
 			size_type			count();
-			iterator Node			*find(value_type val); */
-/*			std::pair<iterator, iterator>	equal_range();
+			iterator			find();
+			std::pair<iterator, iterator>	equal_range();
 			iterator			lower_bound();
 			iterator			upper_bound();
 
@@ -137,7 +144,8 @@ namespace ft
 
 			class value_compare
 			{
-				friend class map<key_type, mapped_type, key_compare, Alloc>;
+	//			friend class map<key_type, mapped_type, key_compare, Alloc>;
+
 				protected:
 					Compare						comp;
 					value_compare(Compare c)
@@ -148,59 +156,60 @@ namespace ft
 						{ return (comp(x.first, y.first)); }
 			};
 
-			class Node
+
+			struct _node
 			{
-				typedef	typename ft::map<Key, T, Compare, Alloc>::Node	node;
+				short								pos;
+				short								color;
+				pointer								this_mem;
+				struct _node						*parent;
+				struct _node						*right;
+				struct _node						*left;
+				ft::pair<key_type, mapped_type>		val;	
+				
+				_node()
+				{
+					this->pos = 0;
+					this->color = RED;
+					this->parent = NULL;
+					this->right = NULL;
+					this->left = NULL;
+					this->this_mem = NULL;
+				};
 
-				public:
-					value_type		val;
-					node			*left;
-					node			*right;
-					node			*parent;
-					COLOR			color;
+				_node(pointer &mem)
+				{
+					this->pos = 0;
+					this->color = RED;
+					this->parent = NULL;
+					this->right = NULL;
+					this->left = NULL;
+					this->this_mem = mem;
+				}
+			};
 
-					// CONSTRUCT
-					Node(value_type &val);
-					
-					node	*uncle();
-					node	*sibling();	
-					void	move_down(Node *nParent);
-
-					bool has_red_child();
-					bool is_on_left();
-
-			}; // class Node
-			
-			Node			*_root;
+			struct _node	_root;
 			allocator_type	_alloc;
 			size_t			_size;
 
-			void	left_rotate(Node *x);
-			void	right_rotate(Node *x);
-			void	swap_colors(Node *x1, Node *x2);
-			void	swap_values(Node *u, Node *v);
-			void	fix_red_red(Node *x);
-			Node	*successor(Node *x);
-			Node	*BSTreplace(Node *x);
-			void	delete_node(Node *v);
-			void	fix_double_black(Node *x);
-//			void	level_order(Node *x);
-//			void	in_order(Node *x);
+			void	add(const ft::pair<key_type, mapped_type> &val);
+			void	add(_node &parent, _node &tnew_node);
+			void	correct_tree(_node &node);
+			void	rotate(_node &node);
+			void	right_rotate(_node &node);
+			void	left_rotate(_node &node);
+			void	left_right_rotate(_node &node);
+			void	right_left_rotate(_node &node);
+			void	check_colors(_node &node);
 
 			
-
-		public :
-			Node			*find(value_type val); // TO MOVE UP (return value Node to swap with iterator)
 
 	}; // class map
 
 //# include "map_overloads.ipp"
 
-# include "node.ipp"
-# include "bst_methods.ipp"
-# include "map.ipp"
-
 } // namespace ft
 
+# include "map.ipp"
 
 #endif
