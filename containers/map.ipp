@@ -1,339 +1,517 @@
-// MODIFIERS
+#define ITERATOR	ft::map<key_type, mapped_type, key_compare, allocator_type>::iterator
+#define MAP		ft::map<key_type, mapped_type, key_compare, allocator_type>
+
+// CONSTRUCTS DESTRUCT
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::insert(std::pair<const key_type, mapped_type> val)
+MAP::map(const key_compare &comp, const allocator_type &alloc)
 {
-	Node *newNode = new Node(val);
-	if (this->_root == NULL)
-	{
-		// when _root is null
-		// simply insert value at _root
-		newNode->color = BLACK;
-		this->_root = newNode;
-	}
-	else
-	{
-		Node *temp = find(val);
-
-		if (temp->val == val)
-		{
-			// return if value already exists
-			return;
-		}
-
-		// if value is not found, search returns the node
-		// where the value is to be inserted
-
-		// connect new node to correct node
-		newNode->parent = temp;
-
-		if (val < temp->val)
-			temp->left = newNode;
-		else
-			temp->right = newNode;
-
-		// fix red red voilaton if exists
-		fix_red_red(newNode);
-	}
+	this->_alloc = alloc;
+	this->_comp = comp;
+	this->_root = this->TNULL;
+	this->_nodesNbr = 0;
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::erase(std::pair<const key_type, mapped_type> val)
+MAP::map(const map<key_type, mapped_type> &cp)
 {
-	if (this->_root == NULL)
-		// Tree is empty
-		return;
-
-	Node *v = find(val), *u;
-
-	if (v->val != val)
-	{
-		std::cout << "No node found to delete with value:" << val << std::endl;
-		return;
-	}
-
-	delete_node(val);
+	this->_alloc = cp->_alloc;
+	this->_comp = cp->_comp;
+	this->_nodesNbr = 0;
+	this->insert(cp.begin(), cp.end());
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-typename ft::map<key_type, mapped_type, key_compare, allocator_type>::Node	*ft::map<key_type, mapped_type, key_compare, allocator_type>::find(std::pair<const key_type, mapped_type> val)
+template <class inputIt>
+MAP::map(inputIt first, inputIt last,
+	const key_compare &comp, const allocator_type &alloc,
+	typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
 {
-		Node *temp = this->_root;
-		while (temp != NULL)
-		{
-			if (val < temp->val)
-			{
-				if (temp->left == NULL)
-					break;
-				else
-					temp = temp->left;
-			}
-			else if (val == temp->val)
-			{
-				break;
-			}
-			else
-			{
-				if (temp->right == NULL)
-					break;
-				else
-					temp = temp->right;
-			}
-		}
-		return temp;
+	this->_alloc = alloc;
+	this->_comp = comp;
+	this->_nodesNbr = 0;
+	this->insert(first, last);
 }
 
-// CONSTRUCT DESTRUCT
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-ft::map<key_type, mapped_type, key_compare, allocator_type>::map(const key_compare &comp, const allocator_type &alloc)
+MAP	&MAP::operator=(const ft::map<key_type, mapped_type> &cpy)
 {
-/*	this->_alloc = alloc;
-	pointer test = this->_alloc.allocate(sizeof(Node));
-	Node	tmp(test);
-*/
-	this->_size = 0;
-	const std::pair<const key_type, mapped_type> test("haha", 1);
-	insert(test);
+	if (this->_root != TNULL)
+		this->clear();
+
+	this->_root = TNULL;
+	this->_nodesNbr = 0;
+	this->_alloc = cpy._alloc;
+	this->_comp = cpy._comp;
+	this->insert(cpy.begin(), cpy.end());
 }
 
 /*
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-ft::map<key_type, mapped_type, key_compare, allocator_type>::map(const ft::map<key_type, mapped_type> &cpy)
-{
-	this->_alloc = cpy._alloc;
-//	this->insert(cp.begin(), cp.end());
-}
+MAP::~map()
+	{ this->clear(); }
+*/
+// -------------------------------------------------------------------------------------
 
 
+// ELEMENT ACCESS
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-template<class inputIt>
-ft::map<key_type, mapped_type, key_compare, allocator_type>::map(inputIt first, inputIt last,
-																const key_compare &comp,
-																const allocator_type &alloc,
-																typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
+mapped_type	&MAP::at(const key_type &key)
 {
-//	this->insert(first, last);
+	return (this->operator[](key));
 }
-
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-ft::map<key_type, mapped_type, key_compare, allocator_type>
-	ft::map<key_type, mapped_type, key_compare, allocator_type>::operator=
-												(const ft::map<key_type, mapped_type> &cpy)
-{
-	if (&cpy == this)
-		return (*this);
-	this->clear();
-	this->insert(cpy.begin(), cpy.end());
 	
-	return (*this);
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+mapped_type	&MAP::operator[](const key_type &key)
+{
+	iterator	tmp = this->find(key);
+
+	if (tmp == this->end())
+		this->insert(std::make_pair(key, mapped_type()));
+	tmp = this->find(key);
+	return ((*tmp).second);
 }
+	
+
+
+// CAPACITY
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename allocator_type::size_type	MAP::size()
+	{ return (this->_nodesNbr); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-ft::map<key_type, mapped_type, key_compare, allocator_type>::~map()
-{
-//	this->clear();
-}
+typename allocator_type::size_type	MAP::max_size()
+	{ std::distance(this->begin(), this->end()); }
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+bool	MAP::empty()
+	{ return  (this->_root == TNULL); }
+
+
 
 
 // MODIFIERS
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-typename ft::Binary_search_tree<value_type, key_compare>::iterator
-												insert(const ft::pair<key_type, mapped_type> &val)
+void	MAP::clear()
 {
-
+	erase(this->begin(), this->end());
+	this->_nodesNbr = 0;
 }
 
-
-
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::add
-												(const ft::pair<key_type, mapped_type> &val)
+std::pair<typename ITERATOR, bool>	MAP::insert(const value_type &val)
 {
-	pointer	tmp_mem = this->_alloc.allocate(sizeof(_node));
-	_node	tmp_node(tmp_mem);
+	Node	*node = new Node;
+	Node	*y = NULL;
+	Node	*x = this->_root;
 
-	if (this->__root.this_mem == NULL)
+	node->val = this->_alloc.allocate(1);
+	this->_alloc.construct(node->val, val);	
+
+	node->parent = NULL;
+	node->left = TNULL;
+	node->right = TNULL;
+	node->color = RED;
+
+	while (x != TNULL)
 	{
-		this->__root = tmp_node;
-		this->__root.color = BLACK;
-		this->_size++;
-		return;
+		y = x;
+		if (this->_comp((*node->val).first, (*x->val).first))
+			x = x->left;
+		else if ((*node->val).first == (*x->val).first)
+			return ( std::make_pair(x, false) );
+		else
+			x = x->right;
 	}
-	add(this->__root, tmp_node);
-	this->_size++;
+
+	this->_nodesNbr++;
+	
+	node->parent = y;
+
+	if (y == NULL)
+		_root = node;
+	else if ( this->_comp((*node->val).first, (*y->val).first) )
+		y->left = node;
+	else
+		y->right = node;
+
+	if (node->parent == NULL)
+	{
+		node->color = BLACK;
+		return ( std::make_pair(node, true) );
+	}
+
+	if (node->parent->parent == NULL)
+		return ( std::make_pair(node, true) );
+
+	insertFix(node);
+	return (std::make_pair(node, true));
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::add
-												(_node &parent, _node &new_node)
+typename ITERATOR	MAP::insert(ITERATOR pos, const value_type &val)
 {
-	// --|||||||||||-----------------------
-//	if ((key_compare(new_node.val.first, parent.val.first)) > 0 ) // VOIR STD::LESS AND MODIF
-	// --|||||||||||-----------------------
-	if (true)
+	(void)pos;
+	return (insert(val));
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+template<class InputIterator>
+void	MAP::insert (InputIterator first, InputIterator last, typename ft::enable_if
+				<!ft::is_integral<InputIterator>::value, InputIterator>::type *)
+{
+	while (first != last)
 	{
-		if (parent.right == NULL)
-		{
-			*parent.right = new_node;
-			*new_node.parent = parent;
-			new_node.pos = LEFT;
-		}
-		return add(*parent.right, new_node);
+		insert(*first);
+		first++;
+	}
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::swap(typename MAP &x)
+{
+	if (this->_root != TNULL)
+		this->clear();
+	this->_alloc = x._alloc;
+	this->_comp = x._comp;
+	this->_root = TNULL;
+	this->_nodesNbr = 0;
+	this->insert(x.begin(), x.end());
+}
+
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+size_t	MAP::erase(const key_type &key)
+{
+	Node	*z = TNULL;
+	Node	*x;
+	Node	*y;
+
+	while (this->_root != TNULL)
+	{
+		if ( (*this->_root->val).first == key)
+			z = this->_root;
+
+		if ( (*this->_root->val).first <= key)
+			this->_root = this->_root->right;
+		else
+			this->_root = this->_root->left;
+	}
+
+	if (z == TNULL)
+		return (0);
+
+	y = z;
+	int y_original_color = y->color;
+	if (z->left == TNULL)
+	{
+		x = z->right;
+		rbTransplant(z, z->right);
+	}
+	else if (z->right == TNULL)
+	{
+		x = z->left;
+		rbTransplant(z, z->left);
 	}
 	else
 	{
-		if (parent.left == NULL)
+		y = minimum(z->right);
+		y_original_color = y->color;
+		x = y->right;
+		if (y->parent == z)
+			x->parent = y;
+		else
 		{
-			*parent.left = new_node;
-			*new_node.parent = parent;
-			new_node.pos = RIGHT;
+			rbTransplant(y, y->right);
+			y->right = z->right;
+			y->right->parent = y;
 		}
-		return add(*parent.left, new_node);
+
+		rbTransplant(z, y);
+		y->left = z->left;
+		y->left->parent = y;
+		y->color = z->color;
 	}
-	check_colors(new_node);
+
+	this->_alloc.destroy(z->val);
+	this->_alloc.deallocate(z->val, 1);
+	delete z;
+	this->_nodesNbr--;
+
+	if (y_original_color == 0)
+		deleteFix(x);
+
+	return (1);
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::check_colors(_node &node)
+void	MAP::erase(ITERATOR first, ITERATOR second)
 {
-	if (node.pos == _root)
-		return;
-
-	if (node.color == RED && node.parent->color == RED )
-		correct_tree(node);
-	check_colors(*node.parent);
-}
-
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::correct_tree(_node &node)
-{
-//	if (node.parent->pos == LEFT) // uncle is the right			/*             0 <- node.parent->parent                  */
-//	{															/* node.      / \                                        */
-//		if (node.parent->parent->right == NULL					/* parent -> O   O <- node.parent->parent->right (oncle) */
-//			|| node.parent->parent->right->color == BLACK)		/*           |                                           */
-//			return (rotate(node));								/*           O  <- node (right or left)                  */
-//	
-/*		if (node.parent->parent->right != NULL)
-			node.parent->parent->right->color = BLACK;
-		node.parent->parent->color = RED;
-		node.parent->color = BLACK;
-		return ;
-	}
-	else if (node.parent->pos == RIGHT)
+	while (first != second)
 	{
-		if (node.parent->parent->left == NULL
-		|| node.parent->parent->left->color == BLACK)
-			return (rotate(node));
-	}
-	if (node.parent->parent->left != NULL)
-		node.parent->parent->left->color = BLACK;
-	node.parent->parent->color = RED;
-	node.parent->color = BLACK;
-	return;
-}
-
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::rotate(_node &node)
-{
-	if (node.pos == LEFT)
-	{
-		if (node.parent->pos == LEFT)
-		{
-			right_rotate(*node.parent->parent);
-			node.color = RED;
-			node.parent->color = BLACK;
-			if (node.parent->right != NULL)
-				node.parent->right->color = RED;
-			return ;
-		}
-		else if (node.parent->pos == RIGHT)
-		{
-			right_left_rotate(*node.parent->parent);
-			node.color = BLACK;
-			node.right->color = RED;
-			node.left->color = RED;
-		}
-	}
-	else if (node.pos == RIGHT)
-	{
-		if (node.parent->pos == RIGHT)
-		{
-			left_rotate(*node.parent->parent);
-			node.color = RED;
-			node.parent->color = BLACK;
-			if (node.parent->left != NULL)
-				node.parent->left->color = RED;
-			return ;
-		}
-		else if (node.parent->pos == LEFT)
-		{
-			left_right_rotate(*node.parent->parent);
-			node.color = BLACK;
-			node.left->color = RED;
-			node.right->color = RED;
-		}
+		erase((*first->val).first);
+		first++;
 	}
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::left_rotate(_node &node)
+void	MAP::erase(ITERATOR pos)
+	{ erase((*pos->val).first); }
+
+
+// ITERATORS
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename ITERATOR	MAP::begin()
 {
-	_node tmp;
+	Node	*min;
 
-	tmp = *node.right;
-	*node.right = tmp;
+	min = this->_root;
+	while (min->left != TNULL)
+		min = min->right;
+	return (min);
+}
 
-	if (node.right != NULL)
-	{
-		*node.right->parent = node;
-		node.right->pos = RIGHT;
-	}
-	if (node.pos == _root)
-	{
-		node = tmp;
-		this->__root = node;
-		node.pos = _root;
-		node.parent = NULL;
-	}
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename ITERATOR	MAP::end() const
+{
+	Node	*max;
+
+	max = this->_root;
+	while (max->right != TNULL)
+		max = max->right;
+	return (max);
+}
+
+
+
+// LOOKUP
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename allocator_type::size_type	MAP::count(const key_type &key) const
+{
+	iterator	tmp = this->find(key);
+
+	if (tmp == this->end())
+		return (0);
+	return (1);
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename ITERATOR MAP::find(const key_type &k) const
+	{ return searchTreeHelper(this->_root, k); }
+
+
+//PRIVATE METHODS
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::rbTransplant(Node *u, Node *v)
+{
+	if (u->parent == NULL)
+		this->_root = v;
+	else if (u == u->parent->left)
+		u->parent->left = v;
 	else
+		u->parent->right = v;
+
+	v->parent = u->parent;
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::deleteFix(Node *x)
+{
+	Node	*s;
+
+	while (x != this->_root && x->color == 0)
 	{
-		tmp.parent = node.parent;
-		if (node.pos == LEFT)
+		if (x == x->parent->left)
 		{
-			tmp.pos = LEFT;
-			*tmp.parent->left = tmp;
+			s = x->parent->right;
+			if (s->color == 1)
+			{
+				s->color = BLACK;
+				x->parent->color = RED;
+				leftRotate(x->parent);
+				s = x->parent->right;
+			}
+
+			if (s->left->color == BLACK && s->right->color == BLACK)
+			{
+				s->color = RED;
+				x = x->parent;
+			}
+			else
+			{
+				if (s->right->color == BLACK)
+				{
+					s->left->color = BLACK;
+					s->color = RED;
+					rightRotate(s);
+					s = x->parent->right;
+				}
+
+				s->color = x->parent->color;
+				x->parent->color = BLACK;
+				s->right->color = BLACK;
+				leftRotate(x->parent);
+				x = this->_root;
+			}
 		}
-		else if (node.pos == RIGHT)
+		else
 		{
-			tmp.pos = RIGHT;
-			*tmp.parent->right = tmp;
+			s = x->parent->left;
+			if (s->color == RED)
+			{
+				s->color = BLACK;
+				x->parent->color = RED;
+				rightRotate(x->parent);
+				s = x->parent->left;
+			}
+
+			if (s->right->color == BLACK && s->right->color == BLACK)
+			{
+				s->color = RED;
+				x = x->parent;
+			}
+			else
+			{
+				if (s->left->color == BLACK)
+				{
+					s->right->color = BLACK;
+					s->color = BLACK;
+					leftRotate(s);
+					s = x->parent->left;
+				}
+
+				s->color = x->parent->color;
+				x->parent->color = BLACK;
+				s->left->color = BLACK;
+				rightRotate(x->parent);
+				x = this->_root;
+			}
 		}
 	}
-	*tmp.left = node;
-	node.left->pos = LEFT;
-	*node.parent = tmp;
+	x->color = BLACK;
 }
-
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::right_rotate(_node &node)
-{
-	; // TO DO
-}
-
 
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::left_right_rotate(_node &node)
+void	MAP::insertFix(Node *k)
 {
-	left_rotate(*node.left);
-	right_rotate(node);
+	Node *u;
+	
+	while (k->parent->color == RED)
+	{
+		if (k->parent == k->parent->parent->right)
+		{
+			u = k->parent->parent->left;
+			if (u->color == RED)
+			{
+				u->color = BLACK;
+				k->parent->color = BLACK;
+				k->parent->parent->color = RED;
+				k = k->parent->parent;
+			}
+			else
+			{
+				if (k == k->parent->left)
+				{
+					k = k->parent;
+					rightRotate(k);
+				}
+				k->parent->color = BLACK;
+				k->parent->parent->color = RED;
+				leftRotate(k->parent->parent);
+			}
+		}
+		else
+		{
+			u = k->parent->parent->right;
+
+			if (u->color == RED)
+			{
+				u->color = BLACK;
+				k->parent->color = BLACK;
+				k->parent->parent->color = RED;
+				k = k->parent->parent;
+			}
+			else
+			{
+				if (k == k->parent->right)
+				{
+					k = k->parent;
+					leftRotate(k);
+				}
+				k->parent->color = BLACK;
+				k->parent->parent->color = RED;
+				rightRotate(k->parent->parent);
+			}
+		}
+		if (k == _root)
+			break;
+	}
+
+	_root->color = BLACK;
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	ft::map<key_type, mapped_type, key_compare, allocator_type>::right_left_rotate(_node &node)
+void	MAP::leftRotate(Node *x)
 {
-	right_rotate(*node.right);
-	left_rotate(node);	
+	Node	*y = x->right;
+
+	x->right = y->left;
+	if (y->left != TNULL)
+		y->left->parent = x;
+
+	y->parent = x->parent;
+	
+	if (x->parent == NULL)
+		this->_root = y;
+	else if (x == x->parent->left)
+		x->parent->left = y;
+	else
+		x->parent->right = y;
+
+	y->left = x;
+	x->parent = y;
 }
 
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::rightRotate(Node *x)
+{
+	Node	*y = x->left;
 
-*/
+	x->left = y->right;
+	if (y->right != TNULL)
+		y->right->parent = x;
+	
+	y->parent = x->parent;
+	
+	if (x->parent == NULL)
+		this->_root = y;
+	else if (x == x->parent->right)
+		x->parent->right = y;
+	else
+		x->parent->left = y;
+	
+	y->right = x;
+	x->parent = y;
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename MAP::Node	*MAP::minimum(Node *node)
+{
+	while (node->left != TNULL)
+		node = node->left;
+
+	return node;
+}
+
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+typename MAP::Node	*MAP::searchTreeHelper(Node *node, const key_type &key) const
+{
+	if (node == TNULL || key == (*node->val).first)
+		return node;
+
+	if (key < (*node->val).first)
+		return searchTreeHelper(node->left, key);
+
+	return searchTreeHelper(node->right, key);
+}

@@ -161,7 +161,11 @@ class foo {
 int main(void)
 {
 
-	ft::map<std::string, int> a;
+	ft::map<int, int> a;
+
+	a.insert(std::make_pair(41, 42));
+	a.count(41);
+	std::cout << a.at(37) << std::endl;
 
 	/*
 	ft::vector<int>	a(44);

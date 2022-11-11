@@ -84,21 +84,21 @@ namespace ft
 			void				swap(ft::vector<value_type> &other);
 
 		// ITERATORS
-			iterator begin(void);
-			iterator end(void);
-			const_iterator begin(void) const;
-			const_iterator end(void) const;
+			iterator			begin(void);
+			iterator			end(void);
+			const_iterator		begin(void) const;
+			const_iterator		end(void) const;
 
-			reverse_iterator rbegin(void);
-			reverse_iterator rend(void);
+			reverse_iterator	rbegin(void);
+			reverse_iterator	rend(void);
 			const_reverse_iterator rend(void) const;
 			const_reverse_iterator rbegin(void) const;
 
 		private :
 			allocator_type	_alloc;
-			pointer		_start;
-			pointer		_end;
-			pointer		_end_capacity;
+			pointer			_start;
+			pointer			_end;
+			pointer			_end_capacity;
 	};
 
 // NON - MEMBER FUNCTIONS OVERLOADS

@@ -7,6 +7,7 @@
 # include <stdlib.h>
 # include <utility>
 # include <functional>
+# include <iterator>
 
 # include "enable_if.hpp"
 # include "random_access_iterator.hpp"
@@ -15,192 +16,180 @@
 
 enum COLOR
 {
-	RED,
-	BLACK
+	BLACK,
+	RED
 };
 
 namespace ft
 {
-	template <class T1, class T2>
-	struct pair
+	class bidirectional_iterator_tag {};
+
+	template <typename T, class Compare, class Distance = __PTRDIFF_TYPE__>
+	class BST_iterator
 	{
-		typedef T1		first_arg;
-		typedef T2		second_arg;
+		public:
+			typedef T								value_type;
+			typedef Distance						difference_type;
+			typedef value_type*						pointer;
+			typedef value_type&						reference;
+			typedef ft::bidirectional_iterator_tag	iterator_category;
+	
+			BST_iterator(pointer node, const Compare &comp = Compare())
+			{
+				this->_node = node;
+				this->_comp = comp;
+			}
 
-		first_arg	first;
-		second_arg	second;
+			virtual ~BST_iterator() { }	
 
-		pair() {}
+			bool operator==(const BST_iterator &cmped)
+				{ return (this->_node == cmped._node); }
 
-		template <class U, class V>
-		pair(const pair<U, V> &cpy)
-		{
-			this->first = cpy.first;
-			this->second = cpy.second;
-		}
+			reference operator*() const
+				{ return (this->_node->val); }
+			
+			pointer operator->() const
+				{ return  (&this->_node->val); }
+			
+			pointer	get_node()
+				{ return (this->_node); }
+		private:
+			pointer	_node;
+			Compare	_comp;
+	};
 
-		pair(const T1 &one, const T2 &two)
-		{
-			this->first = one;
-			this->second = two;
-		}
-
-		pair &operator=(const pair &cmp)
-		{
-			if (*this == cmp)
-				return (*this);
-
-			this->first = cmp.first;
-			this->second = cmp.second;
-
-			return (*this);
-		}
-	}; //struct pair
-
-
-	template<class T1, class T2>
-	bool	operator==(const ft::pair<T1, T2> &cmped, const ft::pair<T1, T2> &cmping)
-		{ return (cmped.first == cmping.first && cmped.second == cmped.second); }
-
-	template<class Key, class T, class Compare = std::less<Key>,
-			class Alloc = std::allocator<std::pair<const Key, T> > >
-
+	template <class Key, class T, class Compare = std::less<Key>,
+				class Alloc = std::allocator<std::pair<const Key, T>>>
 	class map
 	{
-		 public :
-			typedef T 														mapped_type;
-			typedef Key														key_type;
-			typedef std::pair<const Key, T>									value_type;
-			typedef Compare													key_compare;
-			typedef Alloc 													allocator_type;
-			typedef typename allocator_type::reference						reference;
-			typedef typename allocator_type::const_reference				const_reference;
-			typedef typename allocator_type::pointer						pointer;
-			typedef typename allocator_type::const_pointer					const_pointer;
-			typedef typename allocator_type::size_type						size_type;
+		class	Node;
 
-/*			typedef typename ft::random_access_iterator<value_type>			iterator;
-			typedef typename ft::random_access_iterator<const value_type>	const_iterator;
-			typedef typename ft::reverse_iterator<value_type>				reverse_iterator;
-			typedef typename ft::reverse_iterator<const value_type>			const_reverse_iterator;
+		public :
+			typedef T 																mapped_type;
+			typedef Key																key_type;
+			typedef std::pair<const Key, T>											value_type;
+			typedef Compare															key_compare;
+			typedef Alloc 															allocator_type;
+			typedef typename allocator_type::reference								reference;
+			typedef typename allocator_type::const_reference						const_reference;
+			typedef typename allocator_type::pointer								pointer;
+			typedef typename allocator_type::const_pointer							const_pointer;
+			typedef typename allocator_type::size_type								size_type;
 
-			typedef typename ft::Binary_search_tree<value_type, key_compare>::iterator iterator;
-			typedef typename ft::Binary_search_tree<value_type, key_compare>::const_iterator const_iterator;
-			typedef typename ft::iterator_traits<iterator>::difference_type difference_type;
-			typedef size_t size_type;
+			typedef typename ft::BST_iterator<Node, key_compare>					iterator;
+/*			typedef typename ft::BST_const_iterator<Node>							const_iterator;
+			typedef typename ft::BST_iterator<Node, key_compare>::difference_type	difference_type;
 */
 
+			class value_compare : public std::binary_function<value_type, value_type, bool>
+			{
+				friend class map;
+
+				public:
+					bool	operator() (const value_type& lhs, const value_type& rhs) const
+						{ return (comp(lhs.first, rhs.first)); }
+					bool	operator() (const key_type& k, const value_type& rhs) const
+						{ return (comp(k, rhs.first)); }
+					bool	operator() (const value_type& lhs, const key_type& k) const
+						{ return (comp(lhs.first, k)); }
+
+				protected:
+					key_compare					comp;
+
+					value_compare(Compare c)
+						{ this->comp = c; }
+			};
+
+
+//			TODO()
+			//	REMAINING FUNCTION
+			//	OPERATOR OVERLOADS
+
 		// CONSTRUCT DESTRUCT
-/*			template<class inputIt>
+			template<class inputIt>
 			map(inputIt first, inputIt last,
 				const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type * = NULL);
-*/			map(const key_compare &comp = key_compare(),
-									const allocator_type &alloc = allocator_type());
-/*			map(const ft::map<Key, T> &cp);
+			map(const key_compare &comp = key_compare(),
+					const allocator_type &alloc = allocator_type());
+			map(const ft::map<Key, T> &cp);
 
-			map operator=(const ft::map<Key, T> &cpy);
+			virtual ~map() {};
+			map &operator=(const ft::map<Key, T> &cpy);
 
-*/			virtual ~map() {};
-/*
+
 		//ELEMENT ACCESS
-			reference			at();
-			const_reference		operator[]();
+			mapped_type			&at(const key_type &key);
+			mapped_type			&operator[](const key_type &key);
 
 		//CAPACITY
-			bool				empty();
-			size_type			size();
-			size_type			max_size();
+			bool							empty();
+			size_type						size();
+			size_type						max_size();
 
 		//MODIFIERS
-			void				clear();
-			iterator*/void			insert(value_type val);
-/*			iterator*/void			erase(value_type val);
-/*			void				swap();
+			void							clear(void);
+			template <class InputIterator>
+			void							insert (InputIterator first, InputIterator last,
+							typename ft::enable_if<!ft::is_integral
+							<InputIterator>::value, InputIterator>::type *);
+
+			std::pair<iterator, bool>		insert(const value_type &val);
+			iterator						insert(iterator pos, const value_type &val);
+			void							erase(iterator pos);
+			void							erase(iterator first, iterator last);
+			size_t							erase(const	key_type &k);
+			void							swap(map &x);
 
 		//LOOKUP
-			size_type			count();
-			iterator Node			*find(value_type val); */
+			size_type						count(const key_type &key) const;
+			iterator						find(const key_type &key) const;
 /*			std::pair<iterator, iterator>	equal_range();
-			iterator			lower_bound();
-			iterator			upper_bound();
+			iterator						lower_bound();
+			iterator						upper_bound();
 
-		//OBSERVERS
-			key_comp();
-			value_comp();
+*/		//OBSERVERS
+			key_compare	key_comp() const
+				{ return ( key_compare()); }
+
+			value_compare	value_comp() const
+				{ return ( value_compare(key_compare())); }
 
 		//ITERATORS
-			iterator			begin();
-			iterator			end();
-	*/
-		private :
+			iterator						begin(void);
+			iterator						end(void) const;
 
-			class value_compare
-			{
-				friend class map<key_type, mapped_type, key_compare, Alloc>;
-				protected:
-					Compare						comp;
-					value_compare(Compare c)
-						{ this->comp = c; }
-
-				public:
-					bool operator()(const value_type &x, const value_type &y) const
-						{ return (comp(x.first, y.first)); }
-			};
-
+		private:
 			class Node
 			{
 				typedef	typename ft::map<Key, T, Compare, Alloc>::Node	node;
 
 				public:
-					value_type		val;
+					pointer			val;
 					node			*left;
 					node			*right;
 					node			*parent;
 					COLOR			color;
 
-					// CONSTRUCT
-					Node(value_type &val);
-					
-					node	*uncle();
-					node	*sibling();	
-					void	move_down(Node *nParent);
-
-					bool has_red_child();
-					bool is_on_left();
-
 			}; // class Node
-			
-			Node			*_root;
-			allocator_type	_alloc;
-			size_t			_size;
 
-			void	left_rotate(Node *x);
-			void	right_rotate(Node *x);
-			void	swap_colors(Node *x1, Node *x2);
-			void	swap_values(Node *u, Node *v);
-			void	fix_red_red(Node *x);
-			Node	*successor(Node *x);
-			Node	*BSTreplace(Node *x);
-			void	delete_node(Node *v);
-			void	fix_double_black(Node *x);
-//			void	level_order(Node *x);
-//			void	in_order(Node *x);
+			allocator_type			_alloc;
+			Compare					_comp;
+			Node					*_root;
+			Node					*TNULL;
+			size_t					_nodesNbr;
 
-			
-
-		public :
-			Node			*find(value_type val); // TO MOVE UP (return value Node to swap with iterator)
+			void	insertFix(Node *node);
+			void	leftRotate(Node *node);
+			void	rightRotate(Node *node);
+			void	rbTransplant(Node *u, Node *v);
+			Node	*minimum(Node *node);
+			void	deleteFix(Node *node);
+			Node	*searchTreeHelper(Node *node, const key_type &val) const;
 
 	}; // class map
-
-//# include "map_overloads.ipp"
-
-# include "node.ipp"
-# include "bst_methods.ipp"
-# include "map.ipp"
-
 } // namespace ft
 
+# include "map.ipp"
 
 #endif
