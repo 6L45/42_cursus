@@ -67,7 +67,7 @@ void	ftVCout(std::vector<T> &container, const char *delimiter = " ")
 {
 	std::copy(container.begin(), container.end(),
 			std::ostream_iterator<T>(std::cout, delimiter));
-	out nl;
+	out std::endl;
 }
 
 template<class T>
@@ -75,20 +75,13 @@ void	ftVCout(ft::vector<T> &container, const char *delimiter = " ")
 {
 	std::copy(container.begin(), container.end(),
 			std::ostream_iterator<T>(std::cout, delimiter));
-	out nl;
+	out std::endl;
 }
 
 template <class T, class Alloc>
 void	cmp(const ft::vector<T, Alloc> &lhs, const ft::vector<T, Alloc> &rhs)
 {
 	static int i = 0;
-
-	if (i == 4)
-	{
-		printSize(lhs);
-		printSize(rhs);
-		out nl << nl;
-	}
 
 	std::cout << "############### [" << i++ << "] ###############"  << std::endl;
 	std::cout << "eq: " << (lhs == rhs) << " | ne: " << (lhs != rhs) << std::endl;
@@ -164,9 +157,28 @@ int main(void)
 	ft::map<int, int> a;
 
 	a.insert(std::make_pair(41, 42));
-	a.count(41);
-	std::cout << a.at(37) << std::endl;
+	a.insert(std::make_pair(42, 42));
+	a.insert(std::make_pair(43, 42));
+	a.insert(std::make_pair(44, 42));
+	a.insert(std::make_pair(45, 42));
+	a.insert(std::make_pair(46, 42));
+	a.insert(std::make_pair(46, 42));
+	a.insert(std::make_pair(47, 42));
+	a.insert(std::make_pair(48, 42));
+	a.insert(std::make_pair(49, 42));
+	a.insert(std::make_pair(50, 42));
 
+	a.count(41);
+
+
+	ft::map<int, int>::iterator end = a.end();
+	for (ft::map<int, int>::iterator it = a.begin(); it != end; it++)
+		std::cout << (*it).first << " " << (*it).second << std::endl; 
+
+
+	ft::map<int, int>::iterator start = a.begin();
+	for (ft::map<int, int>::iterator it = a.end() - 1; it != start; it--)
+		std::cout << (*it).first << " " << (*it).second << std::endl; 
 	/*
 	ft::vector<int>	a(44);
 	typename ft::vector<int>::iterator it = a.begin();

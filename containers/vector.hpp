@@ -5,14 +5,12 @@
 # include <iostream>
 # include <iterator>
 # include <stdlib.h>
-//# include <type_traits>
 
 # include "enable_if.hpp"
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 
 # define out	std::cout <<
-# define nl	std::endl
 
 namespace ft
 {

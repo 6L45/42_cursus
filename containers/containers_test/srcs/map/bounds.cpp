@@ -9,8 +9,8 @@ typedef TESTED_NAMESPACE::map<T1, T2>::const_iterator ft_const_iterator;
 
 static int iter = 0;
 
-template <typename MAP>
-void	ft_bound(MAP &mp, const T1 &param)
+template <typename MAP_>
+void	ft_bound(MAP_ &mp, const T1 &param)
 {
 	ft_iterator ite = mp.end(), it[2];
 	_pair<ft_iterator, ft_iterator> ft_range;
@@ -24,8 +24,8 @@ void	ft_bound(MAP &mp, const T1 &param)
 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
 }
 
-template <typename MAP>
-void	ft_const_bound(const MAP &mp, const T1 &param)
+template <typename MAP_>
+void	ft_const_bound(const MAP_ &mp, const T1 &param)
 {
 	ft_const_iterator ite = mp.end(), it[2];
 	_pair<ft_const_iterator, ft_const_iterator> ft_range;
