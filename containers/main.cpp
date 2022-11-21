@@ -156,17 +156,17 @@ int main(void)
 
 	ft::map<int, int> a;
 
-	a.insert(std::make_pair(41, 42));
-	a.insert(std::make_pair(42, 42));
-	a.insert(std::make_pair(43, 42));
-	a.insert(std::make_pair(44, 42));
-	a.insert(std::make_pair(45, 42));
-	a.insert(std::make_pair(46, 42));
-	a.insert(std::make_pair(46, 42));
-	a.insert(std::make_pair(47, 42));
-	a.insert(std::make_pair(48, 42));
-	a.insert(std::make_pair(49, 42));
-	a.insert(std::make_pair(50, 42));
+	a.insert(ft::make_pair(41, 42));
+	a.insert(ft::make_pair(42, 42));
+	a.insert(ft::make_pair(43, 42));
+	a.insert(ft::make_pair(44, 42));
+	a.insert(ft::make_pair(45, 42));
+	a.insert(ft::make_pair(46, 42));
+	a.insert(ft::make_pair(46, 42));
+	a.insert(ft::make_pair(47, 42));
+	a.insert(ft::make_pair(48, 42));
+	a.insert(ft::make_pair(49, 42));
+	a.insert(ft::make_pair(50, 42));
 
 	a.count(41);
 

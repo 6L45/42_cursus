@@ -13,13 +13,8 @@ MAP::map(const key_compare &comp, const allocator_type &alloc)
 {
 	this->_alloc = alloc;
 	this->_comp = comp;
-	this->_root = NULL;
 	this->_nodesNbr = 0;
-	this->_endPoint = new Node;
-	this->_endPoint->endpoint = true;
-	this->_endPoint->parent = NULL;
-	this->_endPoint->right = NULL;
-	this->_endPoint->left = NULL;
+	this->basicInit();
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
@@ -28,14 +23,11 @@ MAP::map(const map<key_type, mapped_type> &cp)
 	if (&cp == this)
 		return;
 
-	this->_alloc = cp->_alloc;
-	this->_comp = cp->_comp;
+	this->_alloc = cp._alloc;
+	this->_comp = cp._comp;
 	this->_nodesNbr = 0;
-	this->_endPoint = new Node;
-	this->_endPoint->endpoint = true;
-	this->_endPoint->parent = NULL;
-	this->_endPoint->right = NULL;
-	this->_endPoint->left = NULL;
+	this->basicInit();
+
 	this->insert(cp.begin(), cp.end());
 }
 
@@ -48,11 +40,8 @@ MAP::map(inputIt first, inputIt last,
 	this->_alloc = alloc;
 	this->_comp = comp;
 	this->_nodesNbr = 0;
-	this->_endPoint = new Node;
-	this->_endPoint->endpoint = true;
-	this->_endPoint->parent = NULL;
-	this->_endPoint->right = NULL;
-	this->_endPoint->left = NULL;
+	this->basicInit();
+
 	this->insert(first, last);
 }
 
@@ -65,23 +54,18 @@ MAP	&MAP::operator=(const ft::map<key_type, mapped_type> &cpy)
 	if (this->_root != NULL)
 		this->clear();
 
-	this->_root = NULL;
 	this->_nodesNbr = 0;
 	this->_alloc = cpy._alloc;
 	this->_comp = cpy._comp;
-	this->_endPoint = new Node;
-	this->_endPoint->endpoint = true;
-	this->_endPoint->parent = NULL;
-	this->_endPoint->right = NULL;
-	this->_endPoint->left = NULL;
+
 	this->insert(cpy.begin(), cpy.end());
+
+	return (*this);
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 MAP::~map()
-{
-	this->clear();
-}
+	{ this->clear(); }
 
 
 
@@ -100,12 +84,13 @@ mapped_type	&MAP::at(const key_type &key)
 {
 	iterator	tmp = this->find(key);
 
-	if (tmp == this->end())
+	if (tmp == NULL || tmp == this->end() || tmp == this->_endPoint)
 	{
 		this->insert(ft::make_pair(key, mapped_type()));
 		tmp = this->find(key);
 	}
-	return ((*tmp)->second);
+
+	return ((*tmp).second);
 }
 	
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
@@ -129,7 +114,7 @@ typename allocator_type::size_type	MAP::size() const
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename allocator_type::size_type	MAP::max_size() const
-	{ return (this->_alloc.max_size()); }
+	{ return (this->_alloc.max_size() / 2); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 bool	MAP::empty() const
@@ -161,16 +146,9 @@ void	MAP::clearHelper(Node *nod)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::clear()
 {
-/*	
 	clearHelper(this->_root);
-	delete this->_endPoint;
-*/
-	std::vector<key_type>	test;
-	for (typename ft::map<key_type, mapped_type>::iterator it = this->begin(); it != this->end(); it++)
-		test.push_back( (*it).first );
-	
-	for (auto el : test)
-		this->erase(el);
+	this->_alloc.destroy(this->_endPoint->val);
+	this->_alloc.deallocate(this->_endPoint->val, 1);
 	delete this->_endPoint;
 }
 
@@ -187,6 +165,7 @@ ft::pair<typename ITERATOR, bool>	MAP::insert(const value_type &val)
 	node->parent = NULL;
 	node->left = NULL;
 	node->right = NULL;
+	node->endpoint = false;
 	node->color = RED;
 
 	while (x != NULL && x != this->_endPoint)
@@ -219,12 +198,16 @@ ft::pair<typename ITERATOR, bool>	MAP::insert(const value_type &val)
 	if (node->parent == NULL)
 	{
 		node->color = BLACK;
+		endPointUpdate();
 		return ( ft::make_pair(MAP::iterator(node), true) );
 	}
 
 	if (node->parent->parent == NULL)
+	{
+		endPointUpdate();
 		return ( ft::make_pair(MAP::iterator(node), true) );
-
+	}
+	
 	insertFix(node);
 	endPointUpdate();
 
@@ -235,7 +218,7 @@ template<class key_type, class mapped_type, class key_compare, class allocator_t
 typename ITERATOR	MAP::insert(ITERATOR pos, const value_type &val)
 {
 	(void)pos;
-	return (insert(val));
+	return (insert(val).first);
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
@@ -367,13 +350,13 @@ void	MAP::erase(ITERATOR first, ITERATOR second)
 		keys.push_back((*first).first);
 		first++;
 	}
-	for (int i = 0; i < keys.size(); i++)
+	for (size_t i = 0; i < keys.size(); i++)
 		erase(keys[i]);
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::erase(ITERATOR pos)
-	{ erase((*pos->val).first); }
+	{ erase((*pos).first); }
 
 
 
@@ -408,35 +391,21 @@ typename CONST_ITERATOR	MAP::begin() const
 	return (min);
 }
 
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-typename ITERATOR	MAP::end()
+template <class key_type, class mapped_type, class key_compare, class allocator_type>
+typename ITERATOR MAP::end()
 {
-	Node	*max;
-
-	max = this->_root;
-	while (max->right != NULL && max->right != this->_endPoint)
-		max = max->right;
-	return (this->_endPoint);
+	if (this->_endPoint)
+		return (this->_endPoint);
+	return (NULL);
 }
 
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-typename CONST_ITERATOR	MAP::end() const
+template <class key_type, class mapped_type, class key_compare, class allocator_type>
+typename CONST_ITERATOR MAP::end() const
 {
-	Node	*max;
-
-	max = this->_root;
-	while (max->right != NULL && max->right != this->_endPoint)
-		max = max->right;
-	return (this->_endPoint);
+	if (this->_endPoint)
+		return (this->_endPoint);
+	return (NULL);
 }
-
-
-
-
-
-
-
-
 
 // LOOKUP
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
@@ -486,9 +455,12 @@ typename ITERATOR MAP::upper_bound(const key_type &key)
 	typename MAP::iterator	it = this->begin();
 	typename MAP::iterator	end = this->end();
 
-	while ( it != end && this->_comp(key, (*it).first) )
+	while (it != end)
+	{
+		if (this->_comp(key, (*it).first))
+			break;
 		it++;
-	
+	}
 	return (it);
 }
 
@@ -498,9 +470,12 @@ typename CONST_ITERATOR MAP::upper_bound(const key_type &key) const
 	typename MAP::iterator	it = this->begin();
 	typename MAP::iterator	end = this->end();
 
-	while ( it != end && this->_comp(key, (*it).first) )
+	while (it != end)
+	{
+		if (this->_comp(key, (*it).first))
+			break;
 		it++;
-	
+	}
 	return (it);
 }
 
@@ -525,6 +500,20 @@ ft::pair<typename CONST_ITERATOR, typename CONST_ITERATOR>
 
 
 //PRIVATE METHODS
+template<class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::basicInit()
+{
+	this->_root = NULL;
+	this->_endPoint = new Node;
+	this->_endPoint->val = this->_alloc.allocate(1);
+	this->_alloc.construct(this->_endPoint->val, ft::make_pair(key_type(), mapped_type()));	
+	this->_endPoint->endpoint = true;
+	this->_endPoint->parent = NULL;
+	this->_endPoint->right = NULL;
+	this->_endPoint->left = NULL;
+}
+
+
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::rbTransplant(Node *u, Node *v)
 {
@@ -821,7 +810,7 @@ typename MAP::Node	*MAP::maximum(Node *node)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::searchTreeHelper(Node *node, const key_type &key) const
 {
-	if (node == NULL || key == (*node->val).first)
+	if (node == NULL || node == this->_endPoint || key == (*node->val).first)
 		return node;
 
 	if (this->_comp(key, (*node->val).first))

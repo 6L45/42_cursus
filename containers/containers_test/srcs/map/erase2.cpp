@@ -7,8 +7,8 @@ typedef _pair<const T1, T2> T3;
 
 static int iter = 0;
 
-template <typename MAP, typename U>
-void	ft_erase(MAP &mp, U param)
+template <typename MAP_, typename U>
+void	ft_erase(MAP_ &mp, U param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	std::cout << "ret: " << mp.erase(param) << std::endl;

@@ -7,8 +7,8 @@ typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 
 static int iter = 0;
 
-template <typename MAP, typename U>
-void	ft_insert(MAP &mp, U param, U param2)
+template <typename MAP_, typename U>
+void	ft_insert(MAP_ &mp, U param, U param2)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	mp.insert(param, param2);

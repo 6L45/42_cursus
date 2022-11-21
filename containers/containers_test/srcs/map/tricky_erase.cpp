@@ -6,8 +6,8 @@ typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 
 static int iter = 0;
 
-template <typename MAP>
-void	ft_erase(MAP &mp, const T1 param)
+template <typename MAP_>
+void	ft_erase(MAP_ &mp, const T1 param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	mp.erase(param);

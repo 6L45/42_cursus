@@ -7,8 +7,8 @@ typedef TESTED_NAMESPACE::map<T1, T2>::iterator iterator;
 
 static int iter = 0;
 
-template <typename MAP, typename U>
-void	ft_insert(MAP &mp, U param)
+template <typename MAP_, typename U>
+void	ft_insert(MAP_ &mp, U param)
 {
 	_pair<iterator, bool> tmp;
 
@@ -19,8 +19,8 @@ void	ft_insert(MAP &mp, U param)
 	printSize(mp);
 }
 
-template <typename MAP, typename U, typename V>
-void	ft_insert(MAP &mp, U param, V param2)
+template <typename MAP_, typename U, typename V>
+void	ft_insert(MAP_ &mp, U param, V param2)
 {
 	iterator tmp;
 

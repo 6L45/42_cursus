@@ -5,6 +5,11 @@
 #define T2 int
 typedef _pair<const T1, T2> T3;
 
+void	useless(TESTED_NAMESPACE::map<T1, T2> &ex)
+{
+	ex.max_size();
+}
+
 int		main(void)
 {
 	std::list<T3> lst;

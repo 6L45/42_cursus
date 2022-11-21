@@ -4,8 +4,8 @@
 #define T2 int
 typedef _pair<const T1, T2> T3;
 
-template <class MAP>
-void	cmp(const MAP &lhs, const MAP &rhs)
+template <class MAP_>
+void	cmp(const MAP_ &lhs, const MAP_ &rhs)
 {
 	static int i = 0;
 

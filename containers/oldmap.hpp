@@ -28,15 +28,31 @@ namespace ft
 	struct pair
 	{
 		public:
-			T1	first;
-			T2	second;
+			typedef T1 first_type;
 
-			pair() {}
+			typedef T2 second_type;
+
+			first_type first;
+			second_type second;
+
+			pair()
+				: first(),
+				second()
+			{
+			}
 
 			template <class U, class V>
-			pair(const pair<U, V> &pr): first(pr.first), second(pr.second) {}
+			explicit pair(const pair<U, V> &pr)
+				: first(pr.first),
+				second(pr.second)
+			{
+			}
 
-			pair(const T1 &a, const T2 &b): first(a), second(b) {}
+			pair(const first_type &a, const second_type &b)
+				: first(a),
+				second(b)
+			{
+			}
 
 			pair &operator=(const pair &pr)
 			{
@@ -46,47 +62,54 @@ namespace ft
 				this->second = pr.second;
 				return (*this);
 			}
-
-			virtual ~pair() {}
 	};
 
 	template <class T1, class T2>
 	bool operator==(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return (lhs.first == rhs.first && lhs.second == rhs.second); }
+	{
+		return (lhs.first == rhs.first && lhs.second == rhs.second);
+	}
 
 	template <class T1, class T2>
 	bool operator!=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return !(lhs == rhs); }
+	{
+		return !(lhs == rhs);
+	}
 
 	template <class T1, class T2>
 	bool operator<(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return (lhs.first < rhs.first
-			|| (!(rhs.first < lhs.first) && lhs.second < rhs.second)); }
+	{
+		return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
+	}
 
 	template <class T1, class T2>
 	bool operator<=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return !(rhs < lhs); }
+	{
+		return !(rhs < lhs);
+	}
 
 	template <class T1, class T2>
 	bool operator>(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return (rhs < lhs); }
+	{
+		return (rhs < lhs);
+	}
 
 	template <class T1, class T2>
 	bool operator>=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
-		{ return !(lhs < rhs); }
+	{
+		return !(lhs < rhs);
+	}
 
 	template <class T1, class T2>
-	ft::pair<T1, T2>	make_pair(T1 x, T2 y)
+	ft::pair<T1, T2> make_pair(T1 x, T2 y)
 	{
 		return (ft::pair<T1, T2>(x, y));
 	}
 
-
-
 	class bidirectional_iterator_tag {};
 
 	template <class Key, class T, class Node,
-				class Alloc = std::allocator<ft::pair<const Key, T> > >
+				class Alloc = std::allocator<ft::pair<const Key, T>>>
 	class BST_iterator
 	{
 		public:
@@ -104,8 +127,6 @@ namespace ft
 			typedef node&										nodeRef;
 
 			typedef ft::bidirectional_iterator_tag	iterator_category;
-
-			BST_iterator() {}
 
 			BST_iterator(nodePointer node)
 			{
@@ -138,7 +159,11 @@ namespace ft
 			{
 				if (cmped._node == NULL && this->_node == NULL)
 					return (true);
+				else if (cmped._node->endpoint && this->_node->endpoint)
+					return (true);				
 				else if (cmped._node == NULL || this->_node == NULL)
+					return (false);
+				else if (cmped._node->endpoint || this->_node->endpoint)
 					return (false);
 
 				return (this->_node->val == cmped._node->val);
@@ -219,13 +244,13 @@ namespace ft
 
 				return (*this);
 			}
-
+		
 		private:
 			nodePointer	_node;
 	};
 
 	template <class Key, class T, class Compare = std::less<Key>,
-				class Alloc = std::allocator<ft::pair<const Key, T> > >
+				class Alloc = std::allocator<ft::pair<const Key, T>>>
 	class map
 	{
 		class	Node;
@@ -246,6 +271,8 @@ namespace ft
 																iterator;
 			typedef typename ft::BST_iterator<key_type, mapped_type, Node, Alloc>
 																const_iterator;
+//			typedef typename ft::BST_iterator<key_type, mapped_type, Node, Alloc>::difference_type
+//																difference_type;
 
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{
@@ -271,11 +298,9 @@ namespace ft
 			map(inputIt first, inputIt last,
 				const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type * = NULL);
-			
-			explicit map(const key_compare &comp = key_compare(),
+			map(const key_compare &comp = key_compare(),
 					const allocator_type &alloc = allocator_type());
-			
-			explicit map(const ft::map<Key, T> &cp);
+			map(const ft::map<Key, T> &cp);
 
 			virtual ~map();
 			map &operator=(const ft::map<Key, T> &cpy);
@@ -345,7 +370,7 @@ namespace ft
 					node			*right;
 					node			*parent;
 					COLOR			color;
-					bool			endpoint;
+					bool			endpoint = false;
 
 					bool	is_left()
 					{
@@ -443,7 +468,6 @@ namespace ft
 			void	fixDoubleBlack(Node *x);
 			void	clearHelper(Node *x);
 			void	endPointUpdate(void);
-			void	basicInit(void);
 	
 	}; // class map
 } // namespace ft

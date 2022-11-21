@@ -7,16 +7,16 @@ typedef _pair<const T1, T2> T3;
 
 static int iter = 0;
 
-template <typename MAP, typename U>
-void	ft_erase(MAP &mp, U param)
+template <typename MAP_, typename U>
+void	ft_erase(MAP_ &mp, U param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	mp.erase(param);
 	printSize(mp);
 }
 
-template <typename MAP, typename U, typename V>
-void	ft_erase(MAP &mp, U param, V param2)
+template <typename MAP_, typename U, typename V>
+void	ft_erase(MAP_ &mp, U param, V param2)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	mp.erase(param, param2);
