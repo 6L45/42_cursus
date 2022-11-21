@@ -6,10 +6,10 @@
 #	VARIABLES DEFINITION
 ##############################################################################
 #	Executable output name
-NAME_EXECUTABLE = webserv
+NAME_EXECUTABLE = client_simulator
 #	Directory paths
 HEADER_DIRECTORY = includes
-SOURCE_DIRECTORY = srcs
+SOURCE_DIRECTORY = .
 #	File Objects
 SRCS = $(foreach dir, ${SOURCE_DIRECTORY}, ${wildcard $(dir)/*.cpp})
 OBJS = ${SRCS:.cpp=.o}
@@ -61,11 +61,5 @@ fclean: clean
 	@rm -f ${NAME_EXECUTABLE}
 
 re: fclean ${NAME_EXECUTABLE}
-
-run: ${NAME_EXECUTABLE}
-	./${NAME_EXECUTABLE} config/ws.conf
-
-debug: 
-	
 
 .PHONY: all, clean, fclean, re, bonus

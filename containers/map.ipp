@@ -126,17 +126,14 @@ bool	MAP::empty() const
 
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	MAP::clearHelper(Node *nod)
+void	MAP::clearHelper(Node *node)
 {
-	if (nod == NULL || nod == this->_endPoint)
+	if (node == NULL || node == this->_endPoint)
 		return;
-	clearHelper(nod->right);
-	clearHelper(nod->left);
-	
-	this->_alloc.destroy(nod->val);
-	this->_alloc.deallocate(nod->val, 1);
-	delete nod;
+	clearHelper(node->right);
+	clearHelper(node->left);
 
+	delete node;
 }
 
 
@@ -147,6 +144,7 @@ template<class key_type, class mapped_type, class key_compare, class allocator_t
 void	MAP::clear()
 {
 	clearHelper(this->_root);
+
 	this->_alloc.destroy(this->_endPoint->val);
 	this->_alloc.deallocate(this->_endPoint->val, 1);
 	delete this->_endPoint;
@@ -326,6 +324,18 @@ size_t	MAP::erase(const key_type &key)
 		y->left = z->left;
 		y->left->parent = y;
 		y->color = z->color;
+	}
+
+	if (z->left)
+		z->left->parent = NULL;
+	if (z->right)
+		z->right->parent = NULL;
+	if (z->parent)
+	{
+		if (z->is_left())
+			z->parent->left = NULL;
+		else
+			z->parent->right = NULL;
 	}
 
 	this->_alloc.destroy(z->val);

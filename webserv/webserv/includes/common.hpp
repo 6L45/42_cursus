@@ -6,25 +6,25 @@
 # include <sys/select.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
-
-# include <list>
-# include <map>
-# include <vector>
-# include <fstream>
-# include <cstring>
-# include <cstdio>
-# include <iostream>
-# include <csignal>
-# include <algorithm>
-
-# include <string.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <unistd.h>
 # include <fcntl.h>
 # include <unistd.h>
 
-# define SERVER_PORT 18000
+# include <map>
+# include <unordered_map>
+# include <vector>
+# include <fstream>
+# include <cstring>
+# include <iostream>
+# include <csignal>
+# include <algorithm>
+# include <sstream>
+
+//# include <stdlib.h>
+//# include <unistd.h>
+//# include <fcntl.h>
+
+# define SERVER_PORT 18005
 # define SA struct sockaddr
 # define MAXLINE 4096
-# define PORT 18009
+# define PORT 18002
+# define CONF_EXTENTION_S_NAME ".conf"

@@ -1,8 +1,8 @@
-#include "webserv.hpp"
+#include "server.class.hpp"
 
 Server::Server(int port)
 {
-	this->_domain =		AF_INET;
+	this->_domain =		AF_INET | PF_INET;
 	this->_service =	SOCK_STREAM;
 	this->_protocol =	0;
 	this->_port =		port;
@@ -14,7 +14,6 @@ Server::Server(int port)
 
 	// socket creation 
 	this->_sock = socket(this->_domain, this->_service, this->_protocol);
-	std::cout << "==> " << this->_sock << std::endl;
 
 	// bind socket to a port
 	if ( (bind(this->_sock, (struct sockaddr *)&(this->_address), 
@@ -31,7 +30,7 @@ Server::Server(int port)
 		exit(EXIT_FAILURE);
 	}
 
-	std::cout << "connected and listening" << std::endl;
+	std::cout << "connected and listening : " << this->_sock << std::endl;
 }
 
 int	&Server::get_socket()
@@ -46,32 +45,63 @@ void	Server::print_request_client(int fd)
 	this->_recvline = static_cast<char *>(malloc(MAXLINE));
 	memset(this->_recvline, 0, MAXLINE);
 	std::cout << std::endl;
-	while ( (n = recv(fd, this->_recvline, MAXLINE - 1, MSG_DONTWAIT)) > 0 )
-	{
-		std::cout << this->_recvline << std::endl << std::endl;
-	}
+
+	while ( (n = recv(fd, this->_recvline, MAXLINE - 1, MSG_DONTWAIT)) > 0 );
+
 	if (n < 0)
 	{
 		if (errno != EAGAIN)
 		{
 			perror("read error");
-			close(fd);
+			close(fd); //need to delete in fds in webserv the fd in map? to avoid select error..
 		}
 	}
+
+	std::string	request(this->_recvline);
 	free(this->_recvline);
+
+	Http_handler request_handler(request);
 }
 
 void	Server::send_response(int fd, fd_set &current_sockets)
 {
-	std::string server_message = "HTTP/1.1 200 OK\r\n\
-Content-Type: text/html\r\n\
-Content-Length: 55\r\n\
-Keep-Alive: timeout=5, max=1000\r\n\
-Connection: Keep-Alive\r\n\
-\r\n";
-	server_message += std::to_string(this->_sock);
 
-	std::signal(SIGPIPE, SIG_IGN); // ignorer le sigpipe car sinon crash
+	std::string server_message = "HTTP/1.1 404 Not Found\r\n\
+Server: nginx/0.8.54\r\n\
+Date: Mon, 02 Jan 2012 02:33:17 GMT\r\n\
+Content-Type: text/html\r\n\
+Content-Length: 169\r\n\
+Connection: keep-alive\r\n\
+Keep-Alive: timeout=5, max=1000\r\n\
+\r\n\
+<html>\r\n\
+<head><title>404 Not Found</title></head>\r\n\
+<body bgcolor=\"white\">\r\n\
+<center><h1>404 Not Found</h1></center>\r\n\
+<hr><center>nginx/0.8.54</center>\r\n\
+</body>\r\n\
+</html>\r\n\
+\r\n";
+
+/*
+	std::string server_message = "HTTP/1.1 200 OK\r\n\
+Server: nginx/0.8.54\r\n\
+Date: Mon, 02 Jan 2012 02:33:17 GMT\r\n\
+Content-Type: text/html\r\n\
+Content-Length: 161\r\n\
+Connection: keep-alive\r\n\
+Keep-Alive: timeout=5, max=1000\r\n\
+\r\n\
+<html>\r\n\
+<head><title>200 0K</title></head>\r\n\
+<body bgcolor=\"white\">\r\n\
+<center><h1>200 OK Found</h1></center>\r\n\
+<hr><center>nginx/0.8.54</center>\r\n\
+</body>\r\n\
+</html>\r\n\
+\r\n";
+*/
+	std::signal(SIGPIPE, SIG_IGN);
 	if ((send(fd, server_message.c_str(), server_message.length(), 0)) < 0)
 	{
 		if (errno == EPIPE)

@@ -105,7 +105,8 @@ namespace ft
 
 			typedef ft::bidirectional_iterator_tag	iterator_category;
 
-			BST_iterator() {}
+			BST_iterator()
+				{ this->_node = NULL; }
 
 			BST_iterator(nodePointer node)
 			{
@@ -122,7 +123,7 @@ namespace ft
 				this->_node = bst_it._node;
 			}
 			
-			BST_iterator &operator=(const BST_iterator	&bst_it)
+			BST_iterator &operator=(const BST_iterator &bst_it)
 			{
 				if (*this == bst_it)
 					return (*this);
@@ -134,14 +135,14 @@ namespace ft
 
 			virtual ~BST_iterator() { }	
 
-			bool operator==(const BST_iterator &cmped)
+			friend bool operator==(const BST_iterator &cmping, const BST_iterator &cmped)
 			{
-				if (cmped._node == NULL && this->_node == NULL)
+				if (cmped._node == NULL && cmping._node == NULL)
 					return (true);
-				else if (cmped._node == NULL || this->_node == NULL)
+				else if (cmped._node == NULL || cmping._node == NULL)
 					return (false);
 
-				return (this->_node->val == cmped._node->val);
+				return (cmping._node->val == cmped._node->val);
 			}
 
 			reference operator*() const
@@ -158,9 +159,6 @@ namespace ft
 
 			friend bool operator<=(const BST_iterator& cmped, const BST_iterator& cmping)
 				{ return (cmped._node <= cmping._node); }
-
-			friend bool operator==(const BST_iterator& cmped, const BST_iterator& cmping)
-				{ return (cmped._node == cmping._node); }
 
 			BST_iterator	&operator++(void)
 			{
