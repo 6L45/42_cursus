@@ -3,7 +3,7 @@
 
 namespace ft
 {
-	class random_access_iterator_tag { };
+	class random_access_iterator_tag {};
 
 	template<typename T, class Distance = __PTRDIFF_TYPE__>
 	class random_access_iterator

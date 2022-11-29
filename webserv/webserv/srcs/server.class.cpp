@@ -1,5 +1,11 @@
 #include "server.class.hpp"
 
+Server::Server(__server_conf sc)
+	:	_port(sc.port),
+		_host(sc.host),
+		_root(sc.root)
+{ }
+
 Server::Server(int port)
 {
 	this->_domain =		AF_INET | PF_INET;
@@ -14,7 +20,7 @@ Server::Server(int port)
 
 	// socket creation 
 	this->_sock = socket(this->_domain, this->_service, this->_protocol);
-
+	fcntl(_sock, F_SETFL, O_NONBLOCK);
 	// bind socket to a port
 	if ( (bind(this->_sock, (struct sockaddr *)&(this->_address), 
 					sizeof(this->_address))) < 0 )
@@ -65,7 +71,7 @@ void	Server::print_request_client(int fd)
 
 void	Server::send_response(int fd, fd_set &current_sockets)
 {
-
+/*
 	std::string server_message = "HTTP/1.1 404 Not Found\r\n\
 Server: nginx/0.8.54\r\n\
 Date: Mon, 02 Jan 2012 02:33:17 GMT\r\n\
@@ -82,8 +88,8 @@ Keep-Alive: timeout=5, max=1000\r\n\
 </body>\r\n\
 </html>\r\n\
 \r\n";
+*/
 
-/*
 	std::string server_message = "HTTP/1.1 200 OK\r\n\
 Server: nginx/0.8.54\r\n\
 Date: Mon, 02 Jan 2012 02:33:17 GMT\r\n\
@@ -100,7 +106,7 @@ Keep-Alive: timeout=5, max=1000\r\n\
 </body>\r\n\
 </html>\r\n\
 \r\n";
-*/
+
 	std::signal(SIGPIPE, SIG_IGN);
 	if ((send(fd, server_message.c_str(), server_message.length(), 0)) < 0)
 	{
