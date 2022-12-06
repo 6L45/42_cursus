@@ -197,6 +197,9 @@ namespace ft
 			pointer			_start;
 			pointer			_end;
 			pointer			_end_capacity;
+
+			template<class inputIt>
+			size_t			__itLen(inputIt first, inputIt last);
 	};
 
 // NON - MEMBER FUNCTIONS OVERLOADS

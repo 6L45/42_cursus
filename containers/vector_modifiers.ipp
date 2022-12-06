@@ -28,7 +28,7 @@ void	ft::vector<value_type, allocator_type>::assign(inputIt first, inputIt last,
 {
 	this->clear();
 
-	size_t	input_size = last - first;
+	size_t	input_size = __itLen(first, last);
 	size_t	cont_size = this->capacity();
 
 	if (cont_size < input_size)
@@ -106,7 +106,7 @@ void	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_ty
 														<!ft::is_integral<inputIt>::value, inputIt>::type*)
 {
 	size_t	dist = pos - this->_start;
-	size_t	offset = last - first;
+	size_t	offset = __itLen(first, last);
 	size_t	p = 0;
 
 	if (this->size() + offset > this->capacity())
@@ -128,10 +128,10 @@ void	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_ty
 		for (size_t i = 0; this->_start + dist + i < this->_end; i++, p++)
 			tmp[p] = *(this->_start + dist + i);
 
-		for (size_t i = 0; first < last; i++, first++)
+		for (size_t i = 0; i < offset; i++, first++)
 		{
 			this->_alloc.destroy(this->_start + dist + i);
-			if (first < last)
+			if (i < offset)
 				this->_alloc.construct(this->_start + dist + i, *first);
 			this->_end = this->_start + dist + i + 1;
 		}

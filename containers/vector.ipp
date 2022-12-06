@@ -42,7 +42,7 @@ template<class inputIt>
 ft::vector<value_type, allocator_type>::vector(inputIt first, inputIt last,
 	typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
 {
-	size_t	input_size = last - first;
+	size_t	input_size = __itLen(first, last);
 
 	this->_start = this->_alloc.allocate(input_size + 1);
 	this->_end = this->_start + input_size;
