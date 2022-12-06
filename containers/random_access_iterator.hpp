@@ -19,12 +19,14 @@ namespace ft
 		// CONSTRUCT DESTRUCT COPY EQUAL----------------------------------------------------
 			random_access_iterator(void) : _elem(NULL) {}
 			random_access_iterator(pointer elem) : _elem(elem) {}
-			random_access_iterator(const random_access_iterator &src) : _elem(src._elem) {}
-
+			random_access_iterator(const random_access_iterator &src)
+				{ *this = src; }
+			
 			random_access_iterator	&operator=(const random_access_iterator &src)
 			{
 				if (this == &src)
 					return (*this);
+
 				this->_elem = src._elem;
 				return (*this);
 			}
@@ -71,9 +73,9 @@ namespace ft
 			}
 			//math
 			random_access_iterator				operator+(const difference_type n) const
-				{ return (this->_elem + n); }
+				{ return (random_access_iterator(this->_elem + n)); }
 			random_access_iterator				operator-(const difference_type n) const
-				{ return (this->_elem - n); }
+				{ return (random_access_iterator(this->_elem - n)); }
 			difference_type						operator-(const random_access_iterator &it) const
 				{ return (this->_elem - it._elem); }
 			random_access_iterator				&operator+=(const difference_type n)
@@ -88,21 +90,21 @@ namespace ft
 			}
 
 			//comparison
-			bool						operator!=(const random_access_iterator it) const
+			bool						operator!=(const random_access_iterator &it) const
 				{ return (this->_elem != it._elem); }
-			bool						operator==(const random_access_iterator it) const
+			bool						operator==(const random_access_iterator &it) const
 				{ return (this->_elem == it._elem); }
-			bool						operator<(const random_access_iterator it) const
+			bool						operator<(const random_access_iterator &it) const
 				{ return (this->_elem < it._elem); }
-			bool						operator>(const random_access_iterator it) const
+			bool						operator>(const random_access_iterator &it) const
 				{ return (this->_elem > it._elem); }
-			bool						operator<=(const random_access_iterator it) const
+			bool						operator<=(const random_access_iterator &it) const
 				{ return (this->_elem <= it._elem); }
-			bool						operator>=(const random_access_iterator it) const
+			bool						operator>=(const random_access_iterator &it) const
 				{ return (this->_elem >= it._elem); }
 
 			// [pos]
-			reference							operator[](difference_type n)
+			reference							operator[](difference_type n) const
 				{ return (*(this->_elem + n)); }
 
 			// cout
@@ -117,7 +119,6 @@ namespace ft
 
 // CONST ITERATOR OVERLOADS
 	template<typename T_L, typename T_R>
-	//typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator==(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{
@@ -125,7 +126,6 @@ namespace ft
 	}
 
 	template<typename T_L, typename T_R>
-//	typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator!=(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{
@@ -133,7 +133,6 @@ namespace ft
 	}
 
 	template<typename T_L, typename T_R>
-//	typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator<(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{
@@ -141,7 +140,6 @@ namespace ft
 	}
 
 	template<typename T_L, typename T_R>
-//	typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator>(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{
@@ -149,7 +147,6 @@ namespace ft
 	}
 
 	template<typename T_L, typename T_R>
-//	typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator<=(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{
@@ -157,7 +154,6 @@ namespace ft
 	}
 
 	template<typename T_L, typename T_R>
-//	typename ft::random_access_iterator<T_L>::difference_type
 	bool	operator>=(const ft::random_access_iterator<T_L> lit,
 			  const ft::random_access_iterator<T_R> rit)
 	{

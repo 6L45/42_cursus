@@ -57,8 +57,8 @@ void	ft::vector<value_type, allocator_type>::clear()
 }
 
 template<class value_type, class allocator_type>
-typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
+typename ft::vector<value_type, allocator_type>::iterator
+	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_type, allocator_type>::iterator pos,
 													size_t n, const value_type &val)
 {
 	const size_t	dist = pos - this->_start;
@@ -101,7 +101,7 @@ typename ft::random_access_iterator<value_type>
 
 template<class value_type, class allocator_type>
 template <class inputIt>
-void	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
+void	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_type, allocator_type>::iterator pos,
 														inputIt first, inputIt last, typename ft::enable_if
 														<!ft::is_integral<inputIt>::value, inputIt>::type*)
 {
@@ -141,16 +141,16 @@ void	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_i
 }
 
 template<class value_type, class allocator_type>
-typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::insert(typename ft::random_access_iterator<value_type> pos,
+typename ft::vector<value_type, allocator_type>::iterator
+	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_type, allocator_type>::iterator pos,
 													const value_type &val)
 {
 	return (this->insert(pos, 1, val));
 }
 
 template<class value_type, class allocator_type>
-typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::erase(typename ft::random_access_iterator<value_type> pos)
+typename ft::vector<value_type, allocator_type>::iterator
+	ft::vector<value_type, allocator_type>::erase(typename ft::vector<value_type, allocator_type>::iterator pos)
 {
 	size_t	i = 0;
 	size_t	dist = pos - this->_start;
@@ -166,9 +166,9 @@ typename ft::random_access_iterator<value_type>
 }
 
 template<class value_type, class allocator_type>
-typename ft::random_access_iterator<value_type>
-	ft::vector<value_type, allocator_type>::erase(typename ft::random_access_iterator<value_type> first,
-													typename ft::random_access_iterator<value_type> last)
+typename ft::vector<value_type, allocator_type>::iterator
+	ft::vector<value_type, allocator_type>::erase(typename ft::vector<value_type, allocator_type>::iterator first,
+													typename ft::vector<value_type, allocator_type>::iterator last)
 {
 	size_t	i = 0;
 	size_t	j = 0;

@@ -1,51 +1,83 @@
-BEFORE SWAP
-foo contains:
-size: 7
-max_size: 230584300921369395
+size: 6
+max_size: 128102389400760775
 
 Content is:
-- key: a | value: 7
-- key: b | value: 6
-- key: c | value: 5
-- key: d | value: 4
-- key: e | value: 3
-- key: f | value: 2
-- key: g | value: 1
+- key: 0 | value: AAAAAA
+- key: 1 | value: BBBBB
+- key: 2 | value: CCCC
+- key: 3 | value: DDD
+- key: 4 | value: EE
+- key: 5 | value: F
 ###############################################
-bar contains:
+	-- [0] --
+ret: 1
+size: 5
+max_size: 128102389400760775
+
+Content is:
+- key: 0 | value: AAAAAA
+- key: 1 | value: BBBBB
+- key: 3 | value: DDD
+- key: 4 | value: EE
+- key: 5 | value: F
+###############################################
+	-- [1] --
+ret: 1
 size: 4
-max_size: 230584300921369395
+max_size: 128102389400760775
 
 Content is:
-- key: w | value: 15
-- key: x | value: 10
-- key: y | value: 5
-- key: z | value: 0
+- key: 0 | value: AAAAAA
+- key: 1 | value: BBBBB
+- key: 4 | value: EE
+- key: 5 | value: F
 ###############################################
-AFTER SWAP
-foo contains:
+	-- [2] --
+ret: 1
+size: 3
+max_size: 128102389400760775
+
+Content is:
+- key: 1 | value: BBBBB
+- key: 4 | value: EE
+- key: 5 | value: F
+###############################################
+	-- [3] --
+ret: 1
+size: 2
+max_size: 128102389400760775
+
+Content is:
+- key: 1 | value: BBBBB
+- key: 4 | value: EE
+###############################################
 size: 4
-max_size: 230584300921369395
+max_size: 128102389400760775
 
 Content is:
-- key: w | value: 15
-- key: x | value: 10
-- key: y | value: 5
-- key: z | value: 0
+- key: -1 | value: Hello
+- key: 1 | value: BBBBB
+- key: 4 | value: EE
+- key: 10 | value: Hi there
 ###############################################
-bar contains:
-size: 7
-max_size: 230584300921369395
+	-- [4] --
+ret: 0
+size: 4
+max_size: 128102389400760775
 
 Content is:
-- key: a | value: 7
-- key: b | value: 6
-- key: c | value: 5
-- key: d | value: 4
-- key: e | value: 3
-- key: f | value: 2
-- key: g | value: 1
+- key: -1 | value: Hello
+- key: 1 | value: BBBBB
+- key: 4 | value: EE
+- key: 10 | value: Hi there
 ###############################################
-Iterator validity:
-1
-1
+	-- [5] --
+ret: 1
+size: 3
+max_size: 128102389400760775
+
+Content is:
+- key: -1 | value: Hello
+- key: 4 | value: EE
+- key: 10 | value: Hi there
+###############################################

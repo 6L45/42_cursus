@@ -24,10 +24,110 @@ namespace ft
 			typedef	typename allocator_type::const_reference				const_reference;
 			typedef	typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::size_type						size_type;
-			typedef typename ft::random_access_iterator<value_type>			iterator;
-			typedef typename ft::random_access_iterator<const value_type>	const_iterator;	
-			typedef	typename ft::reverse_iterator<value_type>				reverse_iterator;
-			typedef typename ft::reverse_iterator<const value_type>			const_reverse_iterator;
+			typedef std::ptrdiff_t											difference_type;
+
+			class iterator : public random_access_iterator<value_type>
+			{
+				protected:
+					typedef random_access_iterator<value_type> super;
+					iterator(value_type *src) : random_access_iterator<value_type>(src) {}
+
+				private:
+					iterator(const random_access_iterator<value_type> &src) : random_access_iterator<value_type>(src){}
+
+				public:
+					iterator(void) : random_access_iterator<value_type>(){};
+					iterator(const iterator &src) : random_access_iterator<value_type>(src){};
+
+					typedef value_type &reference;
+					typedef value_type *pointer;
+
+					reference			operator*(void) const { return (super::operator*()); }
+					pointer				operator->(void) const { return (super::operator->()); }
+					iterator			&operator+=(difference_type n)
+					{
+						super::operator+=(n);
+						return (*this);
+					}
+
+					iterator			&operator-=(difference_type n)
+					{
+						super::operator-=(n);
+						return (*this);
+					}
+					reference			operator[](difference_type n) const {return (super::operator[](n)); ;}
+					difference_type		operator-(const random_access_iterator<value_type> &n) const { return super::operator-(n); }
+					iterator			operator-(difference_type n) const { return super::operator-(n); }
+					iterator			operator+(difference_type n) const { return super::operator+(n); }
+					friend iterator		operator+(difference_type n, const iterator &rhs) { return rhs.operator+(n); }
+
+					iterator &operator++(void)
+					{
+						super::operator++();
+						return *this;
+					};
+					iterator operator++(int) { return super::operator++(0); }
+					iterator &operator--(void)
+					{
+						super::operator--();
+						return *this;
+					};
+					iterator operator--(int) { return super::operator--(0); }
+
+					friend class vector;
+			};
+
+			class const_iterator : public random_access_iterator<value_type>
+			{
+				protected:
+					typedef random_access_iterator<value_type> super;
+					const_iterator(value_type *src) : random_access_iterator<value_type>(src){}
+
+				public:
+					const_iterator(void) : random_access_iterator<value_type>(){}
+					const_iterator(const random_access_iterator<value_type> &src) : random_access_iterator<value_type>(src){}
+
+					typedef const value_type &reference;
+					typedef const value_type *pointer;
+
+					reference operator*(void) const { return (super::operator*()); }
+					pointer operator->(void) const {return (super::operator->()); }
+					const_iterator &operator+=(difference_type n)
+					{
+						super::operator+=(n);
+						return (*this);
+					}
+					const_iterator &operator-=(difference_type n)
+					{
+						super::operator-=(n);
+						return (*this);
+					}
+					reference operator[](difference_type n) const { return (operator[](n)); }
+
+					difference_type operator-(const random_access_iterator<value_type> &n) const { return super::operator-(n); }
+					const_iterator operator-(difference_type n) const { return super::operator-(n); }
+					const_iterator operator+(difference_type n) const { return super::operator+(n); }
+					friend const_iterator operator+(difference_type n, const const_iterator &rhs) { return rhs.operator+(n); }
+
+					const_iterator &operator++(void)
+					{
+						super::operator++();
+						return (*this);
+					};
+					const_iterator operator++(int) { return super::operator++(0); }
+					const_iterator &operator--(void)
+					{
+						super::operator--();
+						return *this;
+					};
+					const_iterator operator--(int) { return super::operator--(0); }
+
+					friend class vector;
+			};
+
+
+			typedef	typename ft::reverse_iterator<iterator>					reverse_iterator;
+			typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 		// CONSTRUCT DESTRUCT
 			template<class inputIt>
@@ -118,7 +218,6 @@ namespace ft
 	template<class T, class Allocator>
 	bool	operator>=(const ft::vector<T, Allocator> &vec, const ft::vector<T, Allocator> &cmp);
 */
-
 } // namespace ft
 
 # include "vector.ipp"

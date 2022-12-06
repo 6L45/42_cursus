@@ -70,8 +70,14 @@ int		main(void)
 	 *
 	 * */
 
+//	mp.ft_break();
+
+	std::cout << "erase -> 25 - 55" << std::endl;
 	ft_erase(mp, 25); // right != NULL; left != NULL
-	ft_erase(mp, 55); // right != NULL; left != NULL
+
+//	mp.ft_break();
+
+//	ft_erase(mp, 55); // right != NULL; left != NULL
 
 	/* After deleting 25 and 55, I would get:
 	 *                                      42
@@ -86,6 +92,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 24 - 54" << std::endl;
 	ft_erase(mp, 24); // right != NULL; left != NULL
 	ft_erase(mp, 54); // right != NULL; left != NULL
 
@@ -102,9 +109,11 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 22 - 52" << std::endl;
 	ft_erase(mp, 22); // right == NULL; left == NULL
 	ft_erase(mp, 51); // right == NULL; left == NULL
 
+	std::cout << "erase -> 21 - 53" << std::endl;
 	ft_erase(mp, 21); // right == NULL; left != NULL
 	ft_erase(mp, 53); // right != NULL; left == NULL
 
@@ -121,6 +130,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 20" << std::endl;
 	ft_erase(mp, 20); // right == NULL; left != NULL
 
 	/* After deleting 20, I would get:
@@ -135,7 +145,8 @@ int		main(void)
 	 *                     27    29  33    38     43    45    47    49
 	 *
 	 * */
-
+  
+	std::cout << "erase -> 23" << std::endl;
 	ft_erase(mp, 23); // right != NULL; left != NULL
 
 	/* After deleting 23, I would get:
@@ -151,6 +162,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 42" << std::endl;
 	ft_erase(mp, 42); // right != NULL; left != NULL; parent == NULL
 
 	/* After deleting 42, I would get:
@@ -166,6 +178,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 38" << std::endl;
 	ft_erase(mp, 38); // right != NULL; left != NULL; parent == NULL
 
 	/* After deleting 38, I would get:
@@ -181,6 +194,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 35" << std::endl;
 	ft_erase(mp, 35); // right != NULL; left != NULL; parent == NULL
 
 	/* After deleting 35, I would get:
@@ -196,6 +210,7 @@ int		main(void)
 	 *
 	 * */
 
+	std::cout << "erase -> 33" << std::endl;
 	ft_erase(mp, 33); // right != NULL; left != NULL; parent == NULL
 
 	/* After deleting 33, I would get:

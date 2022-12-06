@@ -8,7 +8,7 @@
 # include <utility>
 # include <functional>
 # include <iterator>
-# include <vector>
+#include <cstddef>
 
 # include "vector.hpp"
 # include "enable_if.hpp"
@@ -23,6 +23,32 @@ enum COLOR
 
 namespace ft
 {
+
+	template <class Ite1, class Ite2>
+	bool	equal(Ite1 first1, Ite1 last1, Ite2 first2)
+	{
+		while (first1 != last1)
+		{
+			if (*first1 != *first2)
+				return false;
+			++first1; ++first2;
+		}
+		return true;
+	}
+
+	template <class Ite1, class Ite2>
+	bool	lexicographical_compare(Ite1 first1, Ite1 last1, Ite2 first2, Ite2 last2)
+	{
+		while (first1 != last1 && first2 != last2 && *first1 == *first2)
+		{
+			++first1; ++first2;
+		}
+		if (first1 == last1)
+			return (first2 != last2);
+		else if (first2 == last2)
+			return (false);
+		return (*first1 < *first2);
+	}
 	// -------------------------------------------------------- PAIR
 	template <class T1, class T2>
 	struct pair
@@ -97,26 +123,21 @@ namespace ft
 	// -------------------------------------------------------- ITERATORS
 	class bidirectional_iterator_tag {};
 
-	template <class Node, class Alloc>
+	template <class Node, class T, class Distance = __PTRDIFF_TYPE__>
 	class BST_iterator
 	{
 		public:
-			typedef Node										node;
-			typedef Alloc										allocator_type;
-			typedef typename allocator_type::reference			reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::pointer			pointer;
-			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef typename allocator_type::size_type			size_type;
-			typedef	node*										nodePointer;
-			typedef node&										nodeRef;
+			typedef T						value_type;
+			typedef ptrdiff_t				difference_type;
+			typedef value_type&				reference;
+			typedef value_type*				pointer;
 
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 
 			BST_iterator()
 				{ this->_node = NULL; }
 
-			BST_iterator(nodePointer node)
+			BST_iterator(Node * node)
 				{ this->_node = node; }
 
 			BST_iterator(const BST_iterator& bst_it)
@@ -131,18 +152,12 @@ namespace ft
 
 				return (*this);
 			}			
+			
+			operator	BST_iterator<Node, const T>(void) const
+				{ return BST_iterator<Node, const T>(this->_node); }
 
 			virtual ~BST_iterator() { return; }	
 
-			friend bool operator==(const BST_iterator &cmping, const BST_iterator &cmped)
-			{
-				if (cmped._node == NULL && cmping._node == NULL)
-					return (true);
-				else if (cmped._node == NULL || cmping._node == NULL)
-					return (false);
-
-				return (cmping._node == cmped._node);
-			}
 
 			reference operator*() const
 				{ return (*this->_node->val); }
@@ -150,14 +165,31 @@ namespace ft
 			pointer operator->() const
 				{ return  (this->_node->val); }
 
-			friend bool operator!=(const BST_iterator& cmped, const BST_iterator& cmping)
-				{ return (cmped._node != cmping._node); }
+			bool operator==(const BST_iterator &cmping) const
+			{
+				if (this->_node == NULL && cmping._node == NULL)
+					return (true);
+				else if (this->_node == NULL || cmping._node == NULL)
+					return (false);
 
-			friend bool operator>=(const BST_iterator& cmped, const BST_iterator& cmping)
-				{ return (cmped._node >= cmping._node); }
+				return (this->_node == cmping._node);
+			}
 
-			friend bool operator<=(const BST_iterator& cmped, const BST_iterator& cmping)
-				{ return (cmped._node <= cmping._node); }
+			bool operator!=(const BST_iterator& cmping) const
+				{ return (this->_node != cmping._node); }
+
+			bool operator>=(const BST_iterator& cmping) const
+				{ return (this->_node >= cmping._node); }
+
+			bool operator<=(const BST_iterator& cmping) const
+				{ return (this->_node <= cmping._node); }
+
+			bool operator>(const BST_iterator& cmping) const
+				{ return (this->_node > cmping._node); }
+
+			bool operator<(const BST_iterator& cmping) const
+				{ return (this->_node < cmping._node); }
+
 
 			BST_iterator	&operator++(void)
 			{
@@ -217,41 +249,35 @@ namespace ft
 				return (*this);
 			}
 
-			nodePointer	base() const
+			Node *	base() const
 				{ return (this->_node); }
 		private:
-			nodePointer	_node;
+			Node	*_node;
 	}; // class BST_iterator
 
-	template <class Node, class Alloc>
+/*
+	template <class Node, class T, class Distance = __PTRDIFF_TYPE__>
 	class BST_const_iterator
 	{
 		public:
-			typedef Node										node;
-			typedef Alloc										allocator_type;
-			typedef typename allocator_type::reference			reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::pointer			pointer;
-			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef typename allocator_type::size_type			size_type;
-			typedef	node*										nodePointer;
-			typedef node&										nodeRef;
+			typedef T						value_type;
+			typedef ptrdiff_t				difference_type;
+			typedef value_type&				reference;
+			typedef value_type*				pointer;
 
 			typedef ft::bidirectional_iterator_tag				iterator_category;
 
 			BST_const_iterator()
 				{ this->_node = NULL; }
 
-			BST_const_iterator(nodePointer node)
+			BST_const_iterator(Node * node)
 				{ this->_node = node; }
 
 			BST_const_iterator(BST_const_iterator& bst_it)
 				{ *this = bst_it; }
 			
-			BST_const_iterator (const BST_iterator<Node, Alloc> &bst_it)
-			{
-				this->_node = bst_it.base();
-			}
+			BST_const_iterator (const BST_iterator<Node, T> &bst_it)
+				{ this->_node = bst_it.base(); }
 			
 			BST_const_iterator &operator=(const BST_const_iterator &bst_it)
 			{
@@ -262,7 +288,14 @@ namespace ft
 
 				return (*this);
 			}			
-		
+	
+			reference operator*() const
+				{ return (*this->_node->val); }
+			
+			pointer operator->() const
+				{ return  (this->_node->val); }
+
+	
 			BST_const_iterator(const BST_const_iterator &bst_it)
 				{ *this = bst_it; }
 
@@ -278,12 +311,6 @@ namespace ft
 				return (cmping._node == cmped._node);
 			}
 
-			reference operator*() const
-				{ return (*this->_node->val); }
-			
-			pointer operator->() const
-				{ return  (this->_node->val); }
-
 			friend bool operator!=(const BST_const_iterator& cmped, const BST_const_iterator& cmping)
 				{ return (cmped._node != cmping._node); }
 
@@ -293,6 +320,12 @@ namespace ft
 			friend bool operator<=(const BST_const_iterator& cmped, const BST_const_iterator& cmping)
 				{ return (cmped._node <= cmping._node); }
 
+			friend bool operator>(const BST_const_iterator& cmped, const BST_const_iterator& cmping)
+				{ return (cmped._node > cmping._node); }
+
+			friend bool operator<(const BST_const_iterator& cmped, const BST_const_iterator& cmping)
+				{ return (cmped._node < cmping._node); }
+			
 			BST_const_iterator	&operator++(void)
 			{
 				this->_node = this->_node->successor(this->_node);
@@ -351,11 +384,12 @@ namespace ft
 				return (*this);
 			}
 
-			nodePointer	base() const
+			Node *	base() const
 				{ return (this->_node); }
 		private:
-			nodePointer	_node;
+			Node	*_node;
 	}; // class BST_const_iterator
+
 
 	template <class Node, class Alloc>
 	bool operator==(const BST_iterator<Node, Alloc> &cmping, const BST_const_iterator<Node, Alloc> &cmped)
@@ -380,6 +414,13 @@ namespace ft
 	bool operator<=(const BST_iterator<Node, Alloc> &cmped, const BST_const_iterator<Node, Alloc> &cmping)
 		{ return (cmped.base() <= cmping.base()); }
 
+	template <class Node, class Alloc>
+	bool operator>(const BST_iterator<Node, Alloc> &cmped, const BST_const_iterator<Node, Alloc> &cmping)
+		{ return (cmped.base() > cmping.base()); }
+
+	template <class Node, class Alloc>
+	bool operator<(const BST_iterator<Node, Alloc> &cmped, const BST_const_iterator<Node, Alloc> &cmping)
+		{ return (cmped.base() < cmping.base()); }
 
 
 
@@ -408,275 +449,15 @@ namespace ft
 	bool operator<=(const BST_const_iterator<Node, Alloc> &cmped, const BST_iterator<Node, Alloc> &cmping)
 		{ return (cmped.base() <= cmping.base()); }
 
-	
-	
 	template <class Node, class Alloc>
-	class BST_reverse_iterator
-	{
-		public:
-			typedef Node										node;
-			typedef Alloc										allocator_type;
-			typedef typename allocator_type::reference			reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::pointer			pointer;
-			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef typename allocator_type::size_type			size_type;
-			typedef	node*										nodePointer;
-			typedef node&										nodeRef;
-
-			typedef ft::bidirectional_iterator_tag				iterator_category;
-
-			BST_reverse_iterator()
-				{ this->_node = NULL; }
-
-			BST_reverse_iterator(nodePointer node)
-				{ this->_node = node; }
-
-			BST_reverse_iterator(const BST_reverse_iterator& bst_it)
-				{ *this = bst_it; }
-
-			BST_reverse_iterator(const BST_iterator<Node, Alloc> &bst_it)
-				{ this->_node = bst_it.base(); }
-			
-
-			BST_reverse_iterator &operator=(const BST_reverse_iterator &bst_it)
-			{
-				if (this == &bst_it)
-					return (*this);
-
-				this->_node = bst_it._node;
-
-				return (*this);
-			}			
-
-			virtual ~BST_reverse_iterator() { return; }	
-
-			friend bool operator==(const BST_reverse_iterator &cmping, const BST_reverse_iterator &cmped)
-			{
-				if (cmped._node == NULL && cmping._node == NULL)
-					return (true);
-				else if (cmped._node == NULL || cmping._node == NULL)
-					return (false);
-
-				return (cmping._node == cmped._node);
-			}
-
-			reference operator*() const
-				{ return (*this->_node->val); }
-			
-			pointer operator->() const
-				{ return  (this->_node->val); }
-
-			friend bool operator!=(const BST_reverse_iterator& cmped, const BST_reverse_iterator& cmping)
-				{ return (cmped._node != cmping._node); }
-
-			friend bool operator<=(const BST_reverse_iterator& cmped, const BST_reverse_iterator& cmping)
-				{ return (cmped._node >= cmping._node); }
-
-			friend bool operator>=(const BST_reverse_iterator& cmped, const BST_reverse_iterator& cmping)
-				{ return (cmped._node <= cmping._node); }
-
-			BST_reverse_iterator	&operator--(void)
-			{
-				this->_node = this->_node->successor(this->_node);
-				return (*this);
-			}
-
-			BST_reverse_iterator	&operator++(void)
-			{
-				this->_node = this->_node->predecessor(this->_node);
-				return (*this);
-			}
-
-			BST_reverse_iterator	operator--(int)
-			{
-				BST_reverse_iterator tmp(*this);
-				operator++();
-				return (tmp);
-			}
-
-			BST_reverse_iterator	operator++(int)
-			{
-				BST_reverse_iterator tmp(*this);
-				operator--();
-				return (tmp);
-			}
-
-			BST_reverse_iterator	&operator+(const int n)
-			{
-				if (n > 0)
-				{
-					for (int turns = n; turns; turns--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-				else
-				{
-					for (int turns = n; turns; turns++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				
-				return (*this);
-			}
-			
-			BST_reverse_iterator	&operator-(const int n)
-			{
-				if (n > 0)
-				{
-					for (int i = 0; i < n; i++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				else
-				{
-					for (int i = 0; i < n; i--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-
-				return (*this);
-			}
-
-			nodePointer	base() const
-				{ return (this->_node); }
-		private:
-			nodePointer	_node;
-	}; // BST_reverse_iterator
+	bool operator>(const BST_const_iterator<Node, Alloc> &cmped, const BST_iterator<Node, Alloc> &cmping)
+		{ return (cmped.base() > cmping.base()); }
 
 	template <class Node, class Alloc>
-	class BST_const_reverse_iterator
-	{
-		public:
-			typedef Node										node;
-			typedef Alloc										allocator_type;
-			typedef typename allocator_type::reference			reference;
-			typedef typename allocator_type::const_reference	const_reference;
-			typedef typename allocator_type::pointer			pointer;
-			typedef typename allocator_type::const_pointer		const_pointer;
-			typedef typename allocator_type::size_type			size_type;
-			typedef	node*										nodePointer;
-			typedef node&										nodeRef;
-
-			typedef ft::bidirectional_iterator_tag				iterator_category;
-
-			BST_const_reverse_iterator()
-				{ this->_node = NULL; }
-
-			BST_const_reverse_iterator(nodePointer node)
-				{ this->_node = node; }
-
-			BST_const_reverse_iterator(const BST_const_reverse_iterator& bst_it)
-				{ *this = bst_it; }
-			
-			BST_const_reverse_iterator(const BST_reverse_iterator<Node, Alloc> &bst_it)
-				{ this->_node = bst_it.base(); }
-			
-			BST_const_reverse_iterator(const BST_const_iterator<Node, Alloc> &bst_it)
-				{ this->_node = bst_it.base(); }
-			
-			BST_const_reverse_iterator(const BST_iterator<Node, Alloc> &bst_it)
-				{ this->_node = bst_it.base(); }
-
-			
-			BST_const_reverse_iterator &operator=(const BST_const_reverse_iterator &bst_it)
-			{
-				if (this == &bst_it)
-					return (*this);
-
-				this->_node = bst_it._node;
-
-				return (*this);
-			}			
-
-			virtual ~BST_const_reverse_iterator() { return; }	
-
-			friend bool operator==(const BST_const_reverse_iterator &cmping, const BST_const_reverse_iterator &cmped)
-			{
-				if (cmped._node == NULL && cmping._node == NULL)
-					return (true);
-				else if (cmped._node == NULL || cmping._node == NULL)
-					return (false);
-
-				return (cmping._node == cmped._node);
-			}
-
-			reference operator*() const
-				{ return (*this->_node->val); }
-			
-			pointer operator->() const
-				{ return  (this->_node->val); }
-
-			friend bool operator!=(const BST_const_reverse_iterator& cmped, const BST_const_reverse_iterator& cmping)
-				{ return (cmped._node != cmping._node); }
-
-			friend bool operator<=(const BST_const_reverse_iterator& cmped, const BST_const_reverse_iterator& cmping)
-				{ return (cmped._node >= cmping._node); }
-
-			friend bool operator>=(const BST_const_reverse_iterator& cmped, const BST_const_reverse_iterator& cmping)
-				{ return (cmped._node <= cmping._node); }
-
-			BST_const_reverse_iterator	&operator--(void)
-			{
-				this->_node = this->_node->successor(this->_node);
-				return (*this);
-			}
-
-			BST_const_reverse_iterator	&operator++(void)
-			{
-				this->_node = this->_node->predecessor(this->_node);
-				return (*this);
-			}
-
-			BST_const_reverse_iterator	operator--(int)
-			{
-				BST_const_reverse_iterator tmp(*this);
-				operator++();
-				return (tmp);
-			}
-
-			BST_const_reverse_iterator	operator++(int)
-			{
-				BST_const_reverse_iterator tmp(*this);
-				operator--();
-				return (tmp);
-			}
-
-			BST_const_reverse_iterator	&operator+(const int n)
-			{
-				if (n > 0)
-				{
-					for (int turns = n; turns; turns--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-				else
-				{
-					for (int turns = n; turns; turns++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				
-				return (*this);
-			}
-			
-			BST_const_reverse_iterator	&operator-(const int n)
-			{
-				if (n > 0)
-				{
-					for (int i = 0; i < n; i++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				else
-				{
-					for (int i = 0; i < n; i--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-
-				return (*this);
-			}
-
-			nodePointer	base() const
-				{ return (this->_node); }
-		private:
-			nodePointer	_node;
-	}; // class BST_const_reverse_iterator
-	// -------------------------------------------------------- ITERATORS
-
+	bool operator<(const BST_const_iterator<Node, Alloc> &cmped, const BST_iterator<Node, Alloc> &cmping)
+		{ return (cmped.base() < cmping.base()); }
+		// -------------------------------------------------------- ITERATORS
+*/
 
 
 
@@ -705,10 +486,10 @@ namespace ft
 			typedef typename allocator_type::pointer						pointer;
 			typedef typename allocator_type::const_pointer					const_pointer;
 			typedef typename allocator_type::size_type						size_type;
-			typedef typename ft::BST_iterator<Node, Alloc>					iterator;
-			typedef typename ft::BST_const_iterator<Node, Alloc>			const_iterator;
-			typedef typename ft::BST_reverse_iterator<Node, Alloc>			reverse_iterator;
-			typedef typename ft::BST_const_reverse_iterator<Node, Alloc>	const_reverse_iterator;
+			typedef typename ft::BST_iterator<Node, value_type>					iterator;
+			typedef typename ft::BST_iterator<Node, const value_type>		const_iterator;
+			typedef typename ft::reverse_iterator<iterator>					reverse_iterator;
+			typedef typename ft::reverse_iterator<const_iterator>			const_reverse_iterator;
 
 			class value_compare : public std::binary_function<value_type, value_type, bool>
 			{
@@ -795,6 +576,12 @@ namespace ft
 			const_reverse_iterator			rend(void) const;
 
 
+			void	ft_break()
+			{
+				std::cout << "this is the break yo!" << std::endl;
+				for (int i = 0; i < 10; i++);
+			}
+
 		private:
 
 			class Node
@@ -809,7 +596,7 @@ namespace ft
 					COLOR			color;
 					bool			endpoint;
 
-					bool	is_left()
+					bool	is_left() const
 					{
 						if (this->parent == NULL
 							|| this == this->parent->right)
@@ -817,7 +604,7 @@ namespace ft
 						return (true);
 					}
 
-					bool	is_right()
+					bool	is_right() const
 					{
 						if (this->parent == NULL
 							|| this == this->parent->left)
@@ -825,14 +612,14 @@ namespace ft
 						return (true);
 					}
 
-					bool	is_root()
+					bool	is_root() const
 					{
 						if (this->parent == NULL)
 							return (true);
 						return (false);
 					}
 
-					node	*sibling()
+					node	*sibling() const
 					{
 						if (this->parent)
 						{
@@ -844,7 +631,7 @@ namespace ft
 						return (NULL);
 					}
 
-					Node	*successor(node *x)
+					Node	*successor(node *x) const
 					{
 						if (x->right != NULL)
 						{
@@ -864,7 +651,7 @@ namespace ft
 						return (y);
 					}
 
-					Node	*predecessor(node *x)
+					Node	*predecessor(node *x) const
 					{
 						if (x->left != NULL)
 						{
@@ -885,6 +672,23 @@ namespace ft
 						return (y);
 					}
 
+					void	moveDown(Node *nParent)
+					{
+						if (parent != NULL)
+						{
+							if (this->is_left())
+							{
+								parent->left = nParent;
+							}
+							else
+							{
+								parent->right = nParent;
+							}
+						}
+						nParent->parent = parent;
+						parent = nParent;
+					}
+
 			}; // class Node
 
 			allocator_type			_alloc;
@@ -892,8 +696,6 @@ namespace ft
 			Node					*_root;
 			Node					*_endPoint;
 			size_t					_nodesNbr;
-
-			int						order = 0; // <- tracker
 
 			void	insertFix(Node *node);
 			void	leftRotate(Node *node);
@@ -910,14 +712,54 @@ namespace ft
 			void	clearHelper(Node *x);
 			void	endPointUpdate(void);
 			void	basicInit(void);
-	
-			void	tracker(std::string from)
-			{
-				std::cout << '[' << this->order << "] | " <<  from << std::endl;
-				order++;
-			}
 
+			void	_cpy_content(map &src);
 	}; // class map
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator==(const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	if (lhs.size() != rhs.size())
+		return false;
+	return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator!=(const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	return !(lhs == rhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator< (const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator<=(const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	return !(rhs < lhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator> (const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	return (rhs < lhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool	operator>=(const map<Key, T, Compare, Alloc> &lhs,
+					const map<Key, T, Compare, Alloc> &rhs) {
+	return !(lhs < rhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+void	swap(map<Key, T, Compare, Alloc> &x, map<Key, T, Compare, Alloc> &y) {
+	x.swap(y);
+}
+
+
 } // namespace ft
 
 # include "map.ipp"

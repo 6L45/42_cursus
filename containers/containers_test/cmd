@@ -1,1 +1,0 @@
-c++ -g -fpermissive -o ft.map.out -I./../ -D USING_FT srcs/map/bounds.cpp

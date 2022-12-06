@@ -13,7 +13,6 @@
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 MAP::map(const key_compare &comp, const allocator_type &alloc)
 {
-	//tracker("empty construc");
 	this->_alloc = alloc;
 	this->_comp = comp;
 	this->basicInit();
@@ -22,7 +21,6 @@ MAP::map(const key_compare &comp, const allocator_type &alloc)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 MAP::map(const map<key_type, mapped_type> &cp)
 {
-	//tracker("copy construct");
 	if (&cp == this)
 		return;
 
@@ -39,7 +37,6 @@ MAP::map(inputIt first, inputIt last,
 	const key_compare &comp, const allocator_type &alloc,
 	typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
 {
-	//tracker("iterator construc");
 	this->_alloc = alloc;
 	this->_comp = comp;
 	this->basicInit();
@@ -50,7 +47,6 @@ MAP::map(inputIt first, inputIt last,
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 MAP	&MAP::operator=(const ft::map<key_type, mapped_type> &cpy)
 {
-	//tracker("operator=");
 	if (&cpy == this)
 		return (*this);
 
@@ -69,7 +65,6 @@ MAP	&MAP::operator=(const ft::map<key_type, mapped_type> &cpy)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 MAP::~map()
 {
-	//tracker("destruct");
 	clearHelper(this->_root);
 
 	this->_alloc.destroy(this->_endPoint->val);
@@ -91,7 +86,6 @@ MAP::~map()
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 mapped_type	&MAP::at(const key_type &key)
 {
-	//tracker("at");
 	iterator	tmp = this->find(key);
 
 	if (tmp == NULL || tmp == this->_endPoint)
@@ -105,8 +99,7 @@ mapped_type	&MAP::at(const key_type &key)
 	
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 mapped_type	&MAP::operator[](const key_type &key)
-	{	//tracker("operator[]");
-		return (this->at(key)); }
+	{	return (this->at(key)); }
 
 
 
@@ -121,18 +114,15 @@ mapped_type	&MAP::operator[](const key_type &key)
 // CAPACITY
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename allocator_type::size_type	MAP::size() const
-	{	//tracker("size");
-		return (this->_nodesNbr); }
+	{	return (this->_nodesNbr); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename allocator_type::size_type	MAP::max_size() const
-	{	//tracker("max_size");
-		return (this->_alloc.max_size() / 2); }
+	{	return (this->_alloc.max_size() / 2); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 bool	MAP::empty() const
-	{	//tracker("empty");
-		return  (this->_root == NULL); }
+	{	return  (this->_root == NULL); }
 
 
 
@@ -142,7 +132,6 @@ bool	MAP::empty() const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::clearHelper(Node *node)
 {
-	//tracker("clearHelper");
 	if (node == NULL || node == this->_endPoint)
 		return;
 
@@ -161,7 +150,6 @@ void	MAP::clearHelper(Node *node)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::clear()
 {
-	//tracker("clear");
 	clearHelper(this->_root);
 
 	this->_alloc.destroy(this->_endPoint->val);
@@ -174,7 +162,6 @@ void	MAP::clear()
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 ft::pair<typename ITERATOR, bool>	MAP::insert(const value_type &val)
 {
-	//tracker("insert val type");
 	Node	*node = new Node;
 	Node	*y = NULL;
 	Node	*x = this->_root;
@@ -237,7 +224,6 @@ ft::pair<typename ITERATOR, bool>	MAP::insert(const value_type &val)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR	MAP::insert(ITERATOR pos, const value_type &val)
 {
-	//tracker("insert iterator val");
 	(void)pos;
 	return (insert(val).first);
 }
@@ -247,7 +233,6 @@ template<class InputIterator>
 void	MAP::insert (InputIterator first, InputIterator last, typename ft::enable_if
 				<!ft::is_integral<InputIterator>::value, InputIterator>::type *)
 {
-	//tracker("insert iterators");
 	while (first != last)
 	{
 		insert(*first);
@@ -258,17 +243,33 @@ void	MAP::insert (InputIterator first, InputIterator last, typename ft::enable_i
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::swap(typename MAP &x)
 {
-	//tracker("swap");
-	typename MAP	tmp(x);
-	x = *this;
-	*this = tmp;
+	typename MAP	tmp;
+
+	tmp._alloc = x._alloc;
+	tmp._comp = x._comp;
+	tmp._root = x._root;
+	Node * tmpEndPoint = x._endPoint;
+	tmp._nodesNbr = x._nodesNbr;
+
+	x._alloc = this->_alloc;
+	x._comp = this->_comp;
+	x._root = this->_root;
+	x._endPoint = this->_endPoint;
+	x._nodesNbr = this->_nodesNbr;
+
+	this->_alloc = tmp._alloc;
+	this->_comp = tmp._comp;
+	this->_root = tmp._root;
+	this->_endPoint = tmpEndPoint;
+	this->_nodesNbr = tmp._nodesNbr;
+
+	tmp._root = NULL;
 }
 
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 size_t	MAP::erase(const key_type &key)
 {
-	//tracker("erase");
 	Node	*v = NULL;
 	Node	*node = this->_root;
 
@@ -299,7 +300,6 @@ size_t	MAP::erase(const key_type &key)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::erase(ITERATOR first, ITERATOR second)
 {
-	//tracker("erase iterators");
 	ft::vector<key_type>	keys;
 
 	while (first != second)
@@ -313,8 +313,7 @@ void	MAP::erase(ITERATOR first, ITERATOR second)
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::erase(ITERATOR pos)
-	{	//tracker("erase pos");
-		erase((*pos).first); }
+	{	erase((*pos).first); }
 
 
 
@@ -330,69 +329,61 @@ void	MAP::erase(ITERATOR pos)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR	MAP::begin()
 {
-	//tracker("begin");
 	if (this->empty())
-		return (this->_endPoint);
+		return (iterator(this->_endPoint));
 
-	return (minimum(this->_root));
+	return (iterator(minimum(this->_root)));
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename CONST_ITERATOR	MAP::begin() const
 {
-	//tracker("begin const");
 	if (this->empty())
-		return (this->_endPoint);
+		return (const_iterator(this->_endPoint));
 
-	return (minimum(this->_root));
+	return (const_iterator(minimum(this->_root)));
 }
 
 template <class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR MAP::end()
 {
-	//tracker("end");
-	return (this->_endPoint);
+	return (iterator(this->_endPoint));
 }
 
 template <class key_type, class mapped_type, class key_compare, class allocator_type>
 typename CONST_ITERATOR MAP::end() const
 {
-	//tracker("end const");
-	return (this->_endPoint);
+	return (const_iterator(this->_endPoint));
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename REVERSE_ITERATOR	MAP::rend()
 {
-	//tracker("begin");
 	if (this->empty())
-		return (this->_endPoint);
+		return (reverse_iterator(this->_endPoint));
 
-	return (minimum(this->_root));
+	return (reverse_iterator(minimum(this->_root)));
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename REVERSE_CONST_ITERATOR	MAP::rend() const
 {
-	//tracker("begin const");
 	if (this->empty())
-		return (this->_endPoint);
+		return (const_reverse_iterator(this->_endPoint));
 
-	return (minimum(this->_root));
+	return (const_reverse_iterator(minimum(this->_root)));
 }
 
 template <class key_type, class mapped_type, class key_compare, class allocator_type>
 typename REVERSE_ITERATOR MAP::rbegin()
 {
-	//tracker("end");
-	return (this->_endPoint);
+	return (reverse_iterator(this->_endPoint));
 }
 
 template <class key_type, class mapped_type, class key_compare, class allocator_type>
 typename REVERSE_CONST_ITERATOR MAP::rbegin() const
 {
-	//tracker("end const");
-	return (this->_endPoint);
+	return (const_reverse_iterator(this->_endPoint));
 }
 
 
@@ -407,7 +398,6 @@ typename REVERSE_CONST_ITERATOR MAP::rbegin() const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename allocator_type::size_type	MAP::count(const key_type &key) const
 {
-	//tracker("count");
 	if (this->find(key) == this->end())
 		return (0);
 	return (1);
@@ -415,19 +405,16 @@ typename allocator_type::size_type	MAP::count(const key_type &key) const
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR MAP::find(const key_type &k)
-	{	//tracker("find val");
-		return searchTreeHelper(this->_root, k); }
+	{	return searchTreeHelper(this->_root, k); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename CONST_ITERATOR MAP::find(const key_type &k) const
-	{	//tracker("find key");
-		return searchTreeHelper(this->_root, k); }
+	{	return searchTreeHelper(this->_root, k); }
 
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR MAP::lower_bound(const key_type &key)
 {
-	//tracker("lower bound");
 	typename MAP::iterator	it = this->begin();
 	typename MAP::iterator	end = this->end();
 	
@@ -440,7 +427,6 @@ typename ITERATOR MAP::lower_bound(const key_type &key)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename CONST_ITERATOR MAP::lower_bound(const key_type &key) const
 {
-	//tracker("lower bound const");
 	typename MAP::const_iterator	it = this->begin();
 	typename MAP::const_iterator	end = this->end();
 	
@@ -453,7 +439,6 @@ typename CONST_ITERATOR MAP::lower_bound(const key_type &key) const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename ITERATOR MAP::upper_bound(const key_type &key)
 {
-	//tracker("upper bound");
 	typename MAP::iterator	it = this->begin();
 	typename MAP::iterator	end = this->end();
 
@@ -469,7 +454,6 @@ typename ITERATOR MAP::upper_bound(const key_type &key)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename CONST_ITERATOR MAP::upper_bound(const key_type &key) const
 {
-	//tracker("upper bound const");
 	typename MAP::const_iterator	it = this->begin();
 	typename MAP::const_iterator	end = this->end();
 
@@ -484,14 +468,12 @@ typename CONST_ITERATOR MAP::upper_bound(const key_type &key) const
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 ft::pair<typename ITERATOR, typename ITERATOR>	MAP::equal_range(const key_type &key)
-	{	//tracker("equal range");
-		return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
+	{	return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 ft::pair<typename CONST_ITERATOR, typename CONST_ITERATOR>
 	MAP::equal_range(const key_type &key) const
-		{	//tracker("equal range const");
-			return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
+		{	return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
 
 
 
@@ -508,7 +490,6 @@ ft::pair<typename CONST_ITERATOR, typename CONST_ITERATOR>
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::basicInit()
 {
-	//tracker("basic init");
 	this->_root = NULL;
 	this->_endPoint = new Node;
 	this->_endPoint->val = this->_alloc.allocate(1);
@@ -520,28 +501,9 @@ void	MAP::basicInit()
 	this->_nodesNbr = 0;
 }
 
-/*
-template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	MAP::rbTransplant(Node *u, Node *v)
-{
-	//tracker("rbTransplant");
-	if (!u || !v)
-		return ;
-	if (u->parent == NULL)
-		this->_root = v;
-	else if (u == u->parent->left)
-		u->parent->left = v;
-	else
-		u->parent->right = v;
-
-	v->parent = u->parent;
-}
-*/
-
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::insertFix(Node *k)
 {
-	//tracker("insertfix");
 	Node *u;
 	
 	while (k->parent->color == RED)
@@ -601,7 +563,6 @@ void	MAP::insertFix(Node *k)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::fixDoubleBlack(Node *x)
 {
-	//tracker("fixdoubleblack");
 	if (x == this->_root)
 		return;
 
@@ -678,10 +639,56 @@ void	MAP::fixDoubleBlack(Node *x)
 	}
 }
 
+template <class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::leftRotate(Node *x)
+{
+	// new parent will be node's right child
+	Node *nParent = x->right;
+
+	// update root if current node is root
+	if (x == _root)
+		_root = nParent;
+
+	x->moveDown(nParent);
+
+	// connect x with new parent's left element
+	x->right = nParent->left;
+	// connect new parent's left element with node
+	// if it is not null
+	if (nParent->left != NULL)
+		nParent->left->parent = x;
+
+	// connect new parent with x
+	nParent->left = x;
+}
+
+template <class key_type, class mapped_type, class key_compare, class allocator_type>
+void	MAP::rightRotate(Node *x)
+{
+	// new parent will be node's left child
+	Node *nParent = x->left;
+
+	// update root if current node is root
+	if (x == _root)
+		_root = nParent;
+
+	x->moveDown(nParent);
+
+	// connect x with new parent's right element
+	x->left = nParent->right;
+	// connect new parent's right element with node
+	// if it is not null
+	if (nParent->right != NULL && nParent->right != this->_endPoint)
+		nParent->right->parent = x;
+
+	// connect new parent with x
+	nParent->right = x;
+}
+
+/*
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::leftRotate(Node *x)
 {
-	//tracker("leftrotate");
 	Node	*y = x->right;
 
 	x->right = y->left;
@@ -704,7 +711,6 @@ void	MAP::leftRotate(Node *x)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::rightRotate(Node *x)
 {
-	//tracker("rightrotate");
 	Node	*y = x->left;
 
 	x->left = y->right;
@@ -723,11 +729,11 @@ void	MAP::rightRotate(Node *x)
 	y->right = x;
 	x->parent = y;
 }
+*/
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::minimum(Node *node) const
 {
-	//tracker("minimum");
 	while (node->left != NULL)
 		node = node->left;
 
@@ -737,7 +743,6 @@ typename MAP::Node	*MAP::minimum(Node *node) const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::maximum(Node *node) const
 {
-	//tracker("maximum");
 	while (node->right != NULL && node->right != this->_endPoint)
 		node = node->right;
 
@@ -747,7 +752,6 @@ typename MAP::Node	*MAP::maximum(Node *node) const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::searchTreeHelper(Node *node, const key_type &key) const
 {
-	//tracker("searchtreehelper");
 	if (node == NULL || node == this->_endPoint)
 		return (this->_endPoint);
 	if (key == node->val->first)
@@ -762,7 +766,6 @@ typename MAP::Node	*MAP::searchTreeHelper(Node *node, const key_type &key) const
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::endPointUpdate()
 {
-	//tracker("endPointUpdate");
 	if (this->_root == NULL)
 		return ;
 	Node	*max = this->maximum(this->_root);
@@ -774,7 +777,6 @@ void	MAP::endPointUpdate()
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::swapValues(Node *u, Node *v)
 {
-	//tracker("swapValues");
 	pointer	temp;
 
 	temp = u->val;
@@ -785,7 +787,6 @@ void	MAP::swapValues(Node *u, Node *v)
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::BSTreplace(Node *x)
 {
-	//tracker("BSTreplace");
 	// when node have 2 children
 	if (x->left != NULL && x->right != NULL && x->right != this->_endPoint)
 	{
@@ -811,77 +812,43 @@ typename MAP::Node	*MAP::BSTreplace(Node *x)
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
-void	MAP::deleteNode(Node *v)
+void	MAP::deleteNode(Node *rmNode)
 {
-	//tracker("deleteNode");
-	Node *u = BSTreplace(v);
+	Node	*replaceNode = NULL;
+	Node	**rmPlace = &this->_root;
 
-	// True when u and v are both black
-	bool uvBlack = ((u == NULL || u == this->_endPoint || u->color == BLACK)
-						&& (v->color == BLACK));
-	Node *parent = v->parent;
-
-	if (u == NULL || u == this->_endPoint)
+	if (rmNode->parent)
+		rmPlace = (rmNode->parent->left == rmNode ? &rmNode->parent->left : &rmNode->parent->right);
+	if (rmNode->left == NULL && rmNode->right == NULL)
+		;
+	else if (rmNode->left == NULL) // left == NULL && right != NULL
+		replaceNode = rmNode->right;
+	else // left != NULL && right ?= NULL
 	{
-		// u is NULL therefore v is leaf
-		if (v == _root)
-			_root = NULL;
-		else
+		replaceNode = maximum(rmNode->left);
+		if (replaceNode != rmNode->left)
+			if ((replaceNode->parent->right = replaceNode->left))
+				replaceNode->left->parent = replaceNode->parent;
+	}
+	if (replaceNode)
+	{
+		replaceNode->parent = rmNode->parent;
+		if (rmNode->left && rmNode->left != replaceNode)
 		{
-			if (uvBlack)
-				fixDoubleBlack(v);
-			else
-			{
-				if (v->sibling() != NULL && v->sibling() != this->_endPoint)
-					v->sibling()->color = RED;
-			}
-
-			if (v->is_left())
-				parent->left = NULL;
-			else
-				parent->right = NULL;
+			replaceNode->left = rmNode->left;
+			replaceNode->left->parent = replaceNode;
 		}
-		this->_alloc.destroy(v->val);
-		this->_alloc.deallocate(v->val, 1);
-		delete v;
-
-		return;
+		if (rmNode->right && rmNode->right != replaceNode)
+		{
+			replaceNode->right = rmNode->right;
+			replaceNode->right->parent = replaceNode;
+		}
 	}
 
-	if (v->left == NULL || v->right == NULL || v->right == this->_endPoint)
-	{
-		// v has 1 child
-		if (v == _root)
-		{
-			// v is root, assign the value of u to v, and delete u
-			swapValues(u, v);
-			v->left = v->right = NULL;
-			this->_alloc.destroy(u->val);
-			this->_alloc.deallocate(u->val, 1);
-			delete u;
-		}
-		else
-		{
-			// Detach v from tree and move u up
-			if (v->is_left())
-				parent->left = u;
-			else
-				parent->right = u;
-
-			this->_alloc.destroy(v->val);
-			this->_alloc.deallocate(v->val, 1);
-			delete v;
-
-			u->parent = parent;
-			if (uvBlack)
-				fixDoubleBlack(u);
-			else
-				u->color = BLACK;
-		}
-		return;
-	}
-	swapValues(u, v);
-	deleteNode(u);
+	*rmPlace = replaceNode;
+	this->_alloc.destroy(rmNode->val);
+	this->_alloc.deallocate(rmNode->val, 1);
+	delete rmNode;
 }
 
 
@@ -1053,7 +1020,7 @@ void leftRotate(Node *x) {
 
 	// update root if current node is root
 	if (x == root)
-	_root = nParent;
+	root = nParent;
 
 	x->moveDown(nParent);
 
@@ -1095,6 +1062,14 @@ void swapColors(Node *x1, Node *x2) {
 	x1->color = x2->color;
 	x2->color = temp;
 }
+
+void swapValues(Node *u, Node *v) {
+	int temp;
+	temp = u->val;
+	u->val = v->val;
+	v->val = temp;
+}
+
 // fix red red at given node
 void fixRedRed(Node *x) {
 	// if x is root color it black and return
@@ -1154,10 +1129,89 @@ Node *successor(Node *x) {
 }
 
 // find node that replaces a deleted node in BST
+Node *BSTreplace(Node *x) {
+	// when node have 2 children
+	if (x->left != NULL and x->right != NULL)
+	return successor(x->right);
 
+	// when leaf
+	if (x->left == NULL and x->right == NULL)
+	return NULL;
+
+	// when single child
+	if (x->left != NULL)
+	return x->left;
+	else
+	return x->right;
+}
 
 // deletes the given node
+void deleteNode(Node *v) {
+	Node *u = BSTreplace(v);
 
+	// True when u and v are both black
+	bool uvBlack = ((u == NULL or u->color == BLACK) and (v->color == BLACK));
+	Node *parent = v->parent;
+
+	if (u == NULL) {
+	// u is NULL therefore v is leaf
+	if (v == root) {
+		// v is root, making root null
+		root = NULL;
+	} else {
+		if (uvBlack) {
+		// u and v both black
+		// v is leaf, fix double black at v
+		fixDoubleBlack(v);
+		} else {
+		// u or v is red
+		if (v->sibling() != NULL)
+			// sibling is not null, make it red"
+			v->sibling()->color = RED;
+		}
+
+		// delete v from the tree
+		if (v->isOnLeft()) {
+		parent->left = NULL;
+		} else {
+		parent->right = NULL;
+		}
+	}
+	delete v;
+	return;
+	}
+
+	if (v->left == NULL or v->right == NULL) {
+	// v has 1 child
+	if (v == root) {
+		// v is root, assign the value of u to v, and delete u
+		v->val = u->val;
+		v->left = v->right = NULL;
+		delete u;
+	} else {
+		// Detach v from tree and move u up
+		if (v->isOnLeft()) {
+		parent->left = u;
+		} else {
+		parent->right = u;
+		}
+		delete v;
+		u->parent = parent;
+		if (uvBlack) {
+		// u and v both black, fix double black at u
+		fixDoubleBlack(u);
+		} else {
+		// u or v red, color u black
+		u->color = BLACK;
+		}
+	}
+	return;
+	}
+
+	// v has 2 children, swap values with successor and recurse
+	swapValues(u, v);
+	deleteNode(u);
+}
 
 void fixDoubleBlack(Node *x) {
 	if (x == root)
@@ -1361,4 +1415,36 @@ void printLevelOrder() {
 	cout << endl;
 }
 };
+
+int main() {
+RBTree tree;
+
+tree.insert(7);
+tree.insert(3);
+tree.insert(18);
+tree.insert(10);
+tree.insert(22);
+tree.insert(8);
+tree.insert(11);
+tree.insert(26);
+tree.insert(2);
+tree.insert(6);
+tree.insert(13);
+
+tree.printInOrder();
+tree.printLevelOrder();
+
+cout<<endl<<"Deleting 18, 11, 3, 10, 22"<<endl;
+
+tree.deleteByVal(18);
+tree.deleteByVal(11);
+tree.deleteByVal(3);
+tree.deleteByVal(10);
+tree.deleteByVal(22);
+
+tree.printInOrder();
+tree.printLevelOrder();
+return 0;
+}
+
 */
