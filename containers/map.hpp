@@ -49,6 +49,7 @@ namespace ft
 			return (false);
 		return (*first1 < *first2);
 	}
+
 	// -------------------------------------------------------- PAIR
 	template <class T1, class T2>
 	struct pair
@@ -253,6 +254,7 @@ namespace ft
 				{ return (this->_node); }
 		private:
 			Node	*_node;
+
 	}; // class BST_iterator
 
 
@@ -261,7 +263,13 @@ namespace ft
 
 
 
+/*
+// Define the allocator type for T1
+typedef std::allocator<T1> Allocator1;
 
+// Use the rebind member class to create the allocator type for T2
+typedef Allocator1::rebind<T2>::other Allocator2;
+*/
 
 
 
@@ -460,23 +468,6 @@ namespace ft
 						}
 
 						return (y);
-					}
-
-					void	moveDown(Node *nParent)
-					{
-						if (parent != NULL)
-						{
-							if (this->is_left())
-							{
-								parent->left = nParent;
-							}
-							else
-							{
-								parent->right = nParent;
-							}
-						}
-						nParent->parent = parent;
-						parent = nParent;
 					}
 
 			}; // class Node

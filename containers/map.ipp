@@ -118,7 +118,7 @@ typename allocator_type::size_type	MAP::size() const
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename allocator_type::size_type	MAP::max_size() const
-	{	return (this->_alloc.max_size() / 2); }
+	{	return (this->_alloc.max_size() - (sizeof(Node) * (this->_nodesNbr + 1)) ); }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 bool	MAP::empty() const
@@ -639,53 +639,6 @@ void	MAP::fixDoubleBlack(Node *x)
 	}
 }
 
-template <class key_type, class mapped_type, class key_compare, class allocator_type>
-void	MAP::leftRotate(Node *x)
-{
-	// new parent will be node's right child
-	Node *nParent = x->right;
-
-	// update root if current node is root
-	if (x == _root)
-		_root = nParent;
-
-	x->moveDown(nParent);
-
-	// connect x with new parent's left element
-	x->right = nParent->left;
-	// connect new parent's left element with node
-	// if it is not null
-	if (nParent->left != NULL)
-		nParent->left->parent = x;
-
-	// connect new parent with x
-	nParent->left = x;
-}
-
-template <class key_type, class mapped_type, class key_compare, class allocator_type>
-void	MAP::rightRotate(Node *x)
-{
-	// new parent will be node's left child
-	Node *nParent = x->left;
-
-	// update root if current node is root
-	if (x == _root)
-		_root = nParent;
-
-	x->moveDown(nParent);
-
-	// connect x with new parent's right element
-	x->left = nParent->right;
-	// connect new parent's right element with node
-	// if it is not null
-	if (nParent->right != NULL && nParent->right != this->_endPoint)
-		nParent->right->parent = x;
-
-	// connect new parent with x
-	nParent->right = x;
-}
-
-/*
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 void	MAP::leftRotate(Node *x)
 {
@@ -729,7 +682,7 @@ void	MAP::rightRotate(Node *x)
 	y->right = x;
 	x->parent = y;
 }
-*/
+
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
 typename MAP::Node	*MAP::minimum(Node *node) const

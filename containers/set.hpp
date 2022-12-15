@@ -193,6 +193,7 @@ namespace ft
 				{ return (this->_node); }
 		private:
 			Node	*_node;
+
 	}; // class BST_iterator
 
 
@@ -465,23 +466,6 @@ namespace ft
 						}
 
 						return (y);
-					}
-
-					void	moveDown(Node *nParent)
-					{
-						if (parent != NULL)
-						{
-							if (this->is_left())
-							{
-								parent->left = nParent;
-							}
-							else
-							{
-								parent->right = nParent;
-							}
-						}
-						nParent->parent = parent;
-						parent = nParent;
 					}
 
 			}; // class Node

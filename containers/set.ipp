@@ -639,53 +639,6 @@ void	SET::fixDoubleBlack(Node *x)
 	}
 }
 
-template <class value_type, class key_compare, class allocator_type>
-void	SET::leftRotate(Node *x)
-{
-	// new parent will be node's right child
-	Node *nParent = x->right;
-
-	// update root if current node is root
-	if (x == _root)
-		_root = nParent;
-
-	x->moveDown(nParent);
-
-	// connect x with new parent's left element
-	x->right = nParent->left;
-	// connect new parent's left element with node
-	// if it is not null
-	if (nParent->left != NULL)
-		nParent->left->parent = x;
-
-	// connect new parent with x
-	nParent->left = x;
-}
-
-template <class value_type, class key_compare, class allocator_type>
-void	SET::rightRotate(Node *x)
-{
-	// new parent will be node's left child
-	Node *nParent = x->left;
-
-	// update root if current node is root
-	if (x == _root)
-		_root = nParent;
-
-	x->moveDown(nParent);
-
-	// connect x with new parent's right element
-	x->left = nParent->right;
-	// connect new parent's right element with node
-	// if it is not null
-	if (nParent->right != NULL && nParent->right != this->_endPoint)
-		nParent->right->parent = x;
-
-	// connect new parent with x
-	nParent->right = x;
-}
-
-/*
 template<class value_type, class key_compare, class allocator_type>
 void	SET::leftRotate(Node *x)
 {
@@ -729,7 +682,6 @@ void	SET::rightRotate(Node *x)
 	y->right = x;
 	x->parent = y;
 }
-*/
 
 template<class value_type, class key_compare, class allocator_type>
 typename SET::Node	*SET::minimum(Node *node) const
