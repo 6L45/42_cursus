@@ -5,8 +5,8 @@ typedef TESTED_NAMESPACE::set<T1>::iterator iterator;
 
 static int iter = 0;
 
-template <typename SET, typename U>
-void	ft_insert(SET &st, U param)
+template <typename T_SET, typename U>
+void	ft_insert(T_SET &st, U param)
 {
 	_pair<iterator, bool> tmp;
 
@@ -17,8 +17,8 @@ void	ft_insert(SET &st, U param)
 	printSize(st);
 }
 
-template <typename SET, typename U, typename V>
-void	ft_insert(SET &st, U param, V param2)
+template <typename T_SET, typename U, typename V>
+void	ft_insert(T_SET &st, U param, V param2)
 {
 	iterator tst;
 

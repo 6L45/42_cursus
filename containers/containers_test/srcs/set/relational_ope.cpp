@@ -2,8 +2,8 @@
 
 #define T1 char
 
-template <class SET>
-void	cst(const SET &lhs, const SET &rhs)
+template <class T_SET>
+void	cst(const T_SET &lhs, const T_SET &rhs)
 {
 	static int i = 0;
 

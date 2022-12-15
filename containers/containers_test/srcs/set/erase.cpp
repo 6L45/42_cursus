@@ -5,16 +5,16 @@
 
 static int iter = 0;
 
-template <typename SET, typename U>
-void	ft_erase(SET &st, U param)
+template <typename T_SET, typename U>
+void	ft_erase(T_SET &st, U param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	st.erase(param);
 	printSize(st);
 }
 
-template <typename SET, typename U, typename V>
-void	ft_erase(SET &st, U param, V param2)
+template <typename T_SET, typename U, typename V>
+void	ft_erase(T_SET &st, U param, V param2)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	st.erase(param, param2);

@@ -7,8 +7,8 @@ typedef TESTED_NAMESPACE::set<T1>::const_iterator ft_const_iterator;
 
 static int iter = 0;
 
-template <typename SET>
-void	ft_bound(SET &st, const T1 &param)
+template <typename T_SET>
+void	ft_bound(T_SET &st, const T1 &param)
 {
 	ft_iterator ite = st.end(), it[2];
 	_pair<ft_iterator, ft_iterator> ft_range;
@@ -22,8 +22,8 @@ void	ft_bound(SET &st, const T1 &param)
 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
 }
 
-template <typename SET>
-void	ft_const_bound(const SET &st, const T1 &param)
+template <typename T_SET>
+void	ft_const_bound(const T_SET &st, const T1 &param)
 {
 	ft_const_iterator ite = st.end(), it[2];
 	_pair<ft_const_iterator, ft_const_iterator> ft_range;

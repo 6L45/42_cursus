@@ -4,8 +4,8 @@
 
 static int iter = 0;
 
-template <typename SET>
-void	ft_erase(SET &st, const T1 param)
+template <typename T_SET>
+void	ft_erase(T_SET &st, const T1 param)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	st.erase(param);

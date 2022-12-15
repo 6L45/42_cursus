@@ -5,8 +5,8 @@
 
 static int iter = 0;
 
-template <typename SET, typename U>
-void	ft_insert(SET &st, U param, U param2)
+template <typename T_SET, typename U>
+void	ft_insert(T_SET &st, U param, U param2)
 {
 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
 	st.insert(param, param2);
