@@ -1,5 +1,5 @@
-#ifndef SET_HPP
-# define SET_HPP
+#ifndef set_HPP
+# define set_HPP
 
 # include <memory>
 # include <iostream>
@@ -50,72 +50,6 @@ namespace ft
 		return (*first1 < *first2);
 	}
 
-	// -------------------------------------------------------- PAIR
-	template <class T1, class T2>
-	struct pair
-	{
-		public:
-			T1	first;
-			T2	second;
-
-			pair(): first(), second() {}
-
-			template <class U, class V>
-			pair(const pair<U, V> &pr): first(pr.first), second(pr.second) {}
-			pair(const T1& a, const T2& b): first(a), second(b) {}
-
-			pair &operator=(const pair &pr)
-			{
-				if (*this == pr)
-					return (*this);
-
-				this->first = pr.first;
-				this->second = pr.second;
-
-				return (*this);
-			}
-
-			virtual ~pair() {}
-	};
-
-	template <class T1, class T2>
-	bool operator==(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (lhs.first == rhs.first && lhs.second == rhs.second);
-	}
-
-	template <class T1, class T2>
-	bool operator!=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(lhs == rhs);
-	}
-
-	template <class T1, class T2>
-	bool operator<(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
-	}
-
-	template <class T1, class T2>
-	bool operator<=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(rhs < lhs);
-	}
-
-	template <class T1, class T2>
-	bool operator>(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (rhs < lhs);
-	}
-
-	template <class T1, class T2>
-	bool operator>=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(lhs < rhs);
-	}
-
-	template <class T1, class T2>
-	ft::pair<T1, T2>	make_pair(T1 x, T2 y) {
-		return (ft::pair<T1, T2>(x, y));
-	}
-
-	// -------------------------------------------------------- PAIR
-
-
 
 
 
@@ -129,28 +63,25 @@ namespace ft
 	// -------------------------------------------------------- ITERATORS
 	class bidirectional_iterator_tag {};
 
-	template <class Node, class T>
+	template <class Node, class T, class Distance = __PTRDIFF_TYPE__>
 	class BST_iterator
 	{
 		public:
-			typedef T								value_type;
-			typedef ptrdiff_t						difference_type;
-			typedef value_type&						reference;
-			typedef value_type*						pointer;
+			typedef T						value_type;
+			typedef ptrdiff_t				difference_type;
+			typedef value_type&				reference;
+			typedef value_type*				pointer;
 
-			typedef ft::bidirectional_iterator_tag	iterator_category;
+			typedef ft::bidirectional_iterator_tag				iterator_category;
 
-			BST_iterator() {
-				this->_node = NULL;
-			}
+			BST_iterator()
+				{ this->_node = NULL; }
 
-			BST_iterator(Node * node) {
-				this->_node = node;
-			}
+			BST_iterator(Node * node)
+				{ this->_node = node; }
 
-			BST_iterator(const BST_iterator& bst_it) {
-				*this = bst_it;
-			}
+			BST_iterator(const BST_iterator& bst_it)
+				{ *this = bst_it; }
 			
 			BST_iterator &operator=(const BST_iterator &bst_it)
 			{
@@ -162,20 +93,17 @@ namespace ft
 				return (*this);
 			}			
 			
-			operator	BST_iterator<Node, const T>(void) const {
-				return BST_iterator<Node, const T>(this->_node);
-			}
+			operator	BST_iterator<Node, const T>(void) const
+				{ return BST_iterator<Node, const T>(this->_node); }
 
-			virtual ~BST_iterator() {}
+			virtual ~BST_iterator() { return; }	
 
 
-			reference operator*() const {
-				return (this->_node->val);
-			}
+			reference operator*() const
+				{ return (*this->_node->val); }
 			
-			pointer operator->() const {
-				return  (&this->_node->val);
-			}
+			pointer operator->() const
+				{ return  (this->_node->val); }
 
 			bool operator==(const BST_iterator &cmping) const
 			{
@@ -187,24 +115,20 @@ namespace ft
 				return (this->_node == cmping._node);
 			}
 
-			bool operator!=(const BST_iterator& cmping) const {
-				return (this->_node != cmping._node);
-			}
-			bool operator>=(const BST_iterator& cmping) const {
-				return (this->_node >= cmping._node);
-			}
+			bool operator!=(const BST_iterator& cmping) const
+				{ return (this->_node != cmping._node); }
 
-			bool operator<=(const BST_iterator& cmping) const {
-				return (this->_node <= cmping._node);
-			}
+			bool operator>=(const BST_iterator& cmping) const
+				{ return (this->_node >= cmping._node); }
 
-			bool operator>(const BST_iterator& cmping) const {
-				return (this->_node > cmping._node);
-			}
+			bool operator<=(const BST_iterator& cmping) const
+				{ return (this->_node <= cmping._node); }
 
-			bool operator<(const BST_iterator& cmping) const {
-				return (this->_node < cmping._node);
-			}
+			bool operator>(const BST_iterator& cmping) const
+				{ return (this->_node > cmping._node); }
+
+			bool operator<(const BST_iterator& cmping) const
+				{ return (this->_node < cmping._node); }
 
 
 			BST_iterator	&operator++(void)
@@ -265,10 +189,82 @@ namespace ft
 				return (*this);
 			}
 
+			Node *	base() const
+				{ return (this->_node); }
 		private:
 			Node	*_node;
 
 	}; // class BST_iterator
+
+
+
+
+
+
+
+
+
+
+
+	// -------------------------------------------------------- PAIR
+	template <class T1, class T2>
+	struct pair
+	{
+		public:
+			T1	first;
+			T2	second;
+
+			pair() {}
+
+			template <class U, class V>
+			pair(const pair<U, V> &pr): first(pr.first), second(pr.second) {}
+			pair(const T1 &a, const T2 &b) :
+				first(a), second(b) {}
+
+			pair &operator=(const pair &pr)
+			{
+				if (*this == pr)
+					return (*this);
+
+				this->first = pr.first;
+				this->second = pr.second;
+
+				return (*this);
+			}
+
+			virtual ~pair() {}
+	};
+
+	template <class T1, class T2>
+	bool operator==(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return (lhs.first == rhs.first && lhs.second == rhs.second); }
+
+	template <class T1, class T2>
+	bool operator!=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return !(lhs == rhs); }
+
+	template <class T1, class T2>
+	bool operator<(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return (lhs.first < rhs.first
+			|| (!(rhs.first < lhs.first) && lhs.second < rhs.second)); }
+
+	template <class T1, class T2>
+	bool operator<=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return !(rhs < lhs); }
+
+	template <class T1, class T2>
+	bool operator>(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return (rhs < lhs); }
+
+	template <class T1, class T2>
+	bool operator>=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs)
+		{ return !(lhs < rhs); }
+
+	template <class T1, class T2>
+	ft::pair<T1, T2>	make_pair(T1 x, T2 y)
+		{ return (ft::pair<T1, T2>(x, y)); }
+
+	// -------------------------------------------------------- PAIR
 
 
 
@@ -286,12 +282,12 @@ namespace ft
 	class set
 	{
 		class	Node;
-		typedef    typename    Alloc::rebind<Node>::other					Allocator;
 
 		public :
+
 			typedef T 														value_type;
 			typedef Compare													key_compare;
-			typedef Allocator												allocator_type;
+			typedef Alloc													allocator_type;
 			typedef typename allocator_type::reference						reference;
 			typedef typename allocator_type::const_reference				const_reference;
 			typedef typename allocator_type::pointer						pointer;
@@ -307,16 +303,14 @@ namespace ft
 				friend class set;
 
 				public:
-					bool	operator() (const value_type& lhs, const value_type& rhs) const {
-						return (comp(lhs, rhs));
-					}
+					bool	operator() (const value_type& lhs, const value_type& rhs) const
+						{ return (comp(lhs, rhs)); }
 
 				protected:
 					key_compare					comp;
 
-					value_compare(Compare c) {
-						this->comp = c;
-					}
+					value_compare(Compare c)
+						{ this->comp = c; }
 			};
 
 		// CONSTRUCT DESTRUCT
@@ -388,20 +382,15 @@ namespace ft
 
 			class Node
 			{
+				typedef	typename ft::set<T, Compare, Alloc>::Node	node;
+
 				public:
-					value_type		val;
-					Node			*left;
-					Node			*right;
-					Node			*parent;
+					pointer			val;
+					node			*left;
+					node			*right;
+					node			*parent;
 					COLOR			color;
-
-					Node() {}
-					Node(const value_type &value) : val(value)
-					{
-						this->color = RED;
-					}
-
-					virtual ~Node() {}
+					bool			endpoint;
 
 					bool	is_left() const
 					{
@@ -426,7 +415,7 @@ namespace ft
 						return (false);
 					}
 
-					Node	*sibling() const
+					node	*sibling() const
 					{
 						if (this->parent)
 						{
@@ -438,7 +427,7 @@ namespace ft
 						return (NULL);
 					}
 
-					Node	*successor(Node *x) const
+					Node	*successor(node *x) const
 					{
 						if (x->right != NULL)
 						{
@@ -458,7 +447,7 @@ namespace ft
 						return (y);
 					}
 
-					Node	*predecessor(Node *x) const
+					Node	*predecessor(node *x) const
 					{
 						if (x->left != NULL)
 						{
@@ -483,8 +472,8 @@ namespace ft
 
 			allocator_type			_alloc;
 			Compare					_comp;
-			pointer					_root;
-			pointer					_endPoint;
+			Node					*_root;
+			Node					*_endPoint;
 			size_t					_nodesNbr;
 
 			void	insertFix(Node *node);
