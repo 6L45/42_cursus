@@ -10,9 +10,7 @@ bool	ft::vector<value_type, allocator_type>::empty() const
 template<class value_type, class allocator_type>
 typename allocator_type::size_type
 	ft::vector<value_type, allocator_type>::size() const
-{
-	return (this->_end - this->_start);
-}
+	{ return (this->_end - this->_start); }
 
 template<class value_type, class allocator_type>
 void	ft::vector<value_type, allocator_type>::reserve(size_t n)
@@ -38,13 +36,9 @@ void	ft::vector<value_type, allocator_type>::reserve(size_t n)
 template<class value_type, class allocator_type>
 typename allocator_type::size_type
 	ft::vector<value_type, allocator_type>::capacity() const
-{
-	return (this->_end_capacity - this->_start);
-}
+	{ return (this->_end_capacity - this->_start); }
 
 template<class value_type, class allocator_type>
 typename allocator_type::size_type
 	ft::vector<value_type, allocator_type>::max_size() const
-{
-	return (allocator_type().max_size());
-}
+	{ return (allocator_type().max_size()); }

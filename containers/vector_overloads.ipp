@@ -20,46 +20,14 @@ bool	operator!=(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
 
 template <class T, class Allocator>
 bool	operator<(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
-{
-	typename ft::vector<T, Allocator>::const_iterator vecIt = vec.begin();
-	typename ft::vector<T, Allocator>::const_iterator cmpIt = cmp.begin();
-
-	while (vecIt != vec.end() - 1)
-	{
-		if (cmpIt == cmp.end())
-			return (false);
-		else if (*vecIt != *cmpIt)
-			break;
-		vecIt++;
-		cmpIt++;
-	}
-	if (*vecIt == *cmpIt && vec.size() != cmp.size())
-		return (vec.size() < cmp.size());
-	return (*vecIt < *cmpIt);
-}
+	{ return ft::lexicographical_compare(vec.begin(), vec.end(), cmp.begin(), cmp.end()); }
 
 template<class T, class Allocator>
 bool	operator<=(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
-{
-	typename ft::vector<T, Allocator>::const_iterator vecIt = vec.begin();
-	typename ft::vector<T, Allocator>::const_iterator cmpIt = cmp.begin();
-
-	while (vecIt != vec.end() - 1)
-	{
-		if (cmpIt == cmp.end())
-			return (false);
-		else if (*vecIt != *cmpIt)
-			break;
-		vecIt++;
-		cmpIt++;
-	}
-	if (*vecIt == *cmpIt && vec.size() != cmp.size())
-		return (vec.size() < cmp.size());
-	return (*vecIt <= *cmpIt);
-}
+	{ return (vec < cmp || ft::equal(vec.begin(), vec.end(), cmp.begin())); }
 
 template<class T, class Allocator>
-bool	operator>(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp)
+bool	operator>(const ft::vector<T, Allocator> &vec, const ft::vector<T> &cmp) 
 	{ return (!(vec <= cmp)); }
 
 template<class T, class Allocator>

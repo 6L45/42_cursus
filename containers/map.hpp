@@ -1,16 +1,10 @@
 #ifndef MAP_HPP
 # define MAP_HPP
 
-# include <memory>
-# include <iostream>
-# include <iterator>
-# include <stdlib.h>
-# include <utility>
-# include <functional>
-# include <iterator>
-#include <cstddef>
+# include <cstddef>
 
-# include "vector.hpp"
+# include "utils.hpp"
+# include "BST_iterator.hpp"
 # include "enable_if.hpp"
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
@@ -23,264 +17,6 @@ enum COLOR
 
 namespace ft
 {
-
-	template <class Ite1, class Ite2>
-	bool	equal(Ite1 first1, Ite1 last1, Ite2 first2)
-	{
-		while (first1 != last1)
-		{
-			if (*first1 != *first2)
-				return false;
-			++first1; ++first2;
-		}
-		return true;
-	}
-
-	template <class Ite1, class Ite2>
-	bool	lexicographical_compare(Ite1 first1, Ite1 last1, Ite2 first2, Ite2 last2)
-	{
-		while (first1 != last1 && first2 != last2 && *first1 == *first2)
-		{
-			++first1; ++first2;
-		}
-		if (first1 == last1)
-			return (first2 != last2);
-		else if (first2 == last2)
-			return (false);
-		return (*first1 < *first2);
-	}
-
-	// -------------------------------------------------------- PAIR
-	template <class T1, class T2>
-	struct pair
-	{
-		public:
-			T1	first;
-			T2	second;
-
-			pair(): first(), second() {}
-
-			template <class U, class V>
-			pair(const pair<U, V> &pr): first(pr.first), second(pr.second) {}
-			pair(const T1& a, const T2& b): first(a), second(b) {}
-
-			pair &operator=(const pair &pr)
-			{
-				if (*this == pr)
-					return (*this);
-
-				this->first = pr.first;
-				this->second = pr.second;
-
-				return (*this);
-			}
-
-			virtual ~pair() {}
-	};
-
-	template <class T1, class T2>
-	bool operator==(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (lhs.first == rhs.first && lhs.second == rhs.second);
-	}
-
-	template <class T1, class T2>
-	bool operator!=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(lhs == rhs);
-	}
-
-	template <class T1, class T2>
-	bool operator<(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (lhs.first < rhs.first || (!(rhs.first < lhs.first) && lhs.second < rhs.second));
-	}
-
-	template <class T1, class T2>
-	bool operator<=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(rhs < lhs);
-	}
-
-	template <class T1, class T2>
-	bool operator>(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return (rhs < lhs);
-	}
-
-	template <class T1, class T2>
-	bool operator>=(const ft::pair<T1, T2> &lhs, const ft::pair<T1, T2> &rhs) {
-		return !(lhs < rhs);
-	}
-
-	template <class T1, class T2>
-	ft::pair<T1, T2>	make_pair(T1 x, T2 y) {
-		return (ft::pair<T1, T2>(x, y));
-	}
-
-	// -------------------------------------------------------- PAIR
-
-
-
-
-
-
-
-
-
-
-
-
-	// -------------------------------------------------------- ITERATORS
-	class bidirectional_iterator_tag {};
-
-	template <class Node, class T>
-	class BST_iterator
-	{
-		public:
-			typedef T								value_type;
-			typedef ptrdiff_t						difference_type;
-			typedef value_type&						reference;
-			typedef value_type*						pointer;
-
-			typedef ft::bidirectional_iterator_tag	iterator_category;
-
-			BST_iterator() {
-				this->_node = NULL;
-			}
-
-			BST_iterator(Node * node) {
-				this->_node = node;
-			}
-
-			BST_iterator(const BST_iterator& bst_it) {
-				*this = bst_it;
-			}
-			
-			BST_iterator &operator=(const BST_iterator &bst_it)
-			{
-				if (this == &bst_it)
-					return (*this);
-
-				this->_node = bst_it._node;
-
-				return (*this);
-			}			
-			
-			operator	BST_iterator<Node, const T>(void) const {
-				return BST_iterator<Node, const T>(this->_node);
-			}
-
-			virtual ~BST_iterator() {}
-
-
-			reference operator*() const {
-				return (this->_node->val);
-			}
-			
-			pointer operator->() const {
-				return  (&this->_node->val);
-			}
-
-			bool operator==(const BST_iterator &cmping) const
-			{
-				if (this->_node == NULL && cmping._node == NULL)
-					return (true);
-				else if (this->_node == NULL || cmping._node == NULL)
-					return (false);
-
-				return (this->_node == cmping._node);
-			}
-
-			bool operator!=(const BST_iterator& cmping) const {
-				return (this->_node != cmping._node);
-			}
-			bool operator>=(const BST_iterator& cmping) const {
-				return (this->_node >= cmping._node);
-			}
-
-			bool operator<=(const BST_iterator& cmping) const {
-				return (this->_node <= cmping._node);
-			}
-
-			bool operator>(const BST_iterator& cmping) const {
-				return (this->_node > cmping._node);
-			}
-
-			bool operator<(const BST_iterator& cmping) const {
-				return (this->_node < cmping._node);
-			}
-
-
-			BST_iterator	&operator++(void)
-			{
-				this->_node = this->_node->successor(this->_node);
-				return (*this);
-			}
-
-			BST_iterator	&operator--(void)
-			{
-				this->_node = this->_node->predecessor(this->_node);
-				return (*this);
-			}
-
-			BST_iterator	operator++(int)
-			{
-				BST_iterator tmp(*this);
-				operator++();
-				return (tmp);
-			}
-
-			BST_iterator	operator--(int)
-			{
-				BST_iterator tmp(*this);
-				operator--();
-				return (tmp);
-			}
-
-			BST_iterator	&operator-(const int n)
-			{
-				if (n > 0)
-				{
-					for (int turns = n; turns; turns--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-				else
-				{
-					for (int turns = n; turns; turns++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				
-				return (*this);
-			}
-			
-			BST_iterator	&operator+(const int n)
-			{
-				if (n > 0)
-				{
-					for (int i = 0; i < n; i++)
-						this->_node = this->_node->successor(this->_node);
-				}
-				else
-				{
-					for (int i = 0; i < n; i--)
-						this->_node = this->_node->predecessor(this->_node);
-				}
-
-				return (*this);
-			}
-
-		private:
-			Node	*_node;
-
-	}; // class BST_iterator
-
-
-
-
-
-
-
-
-
-
-
-	// -------------------------------------------------------- CLASS MAP
 	template <class Key, class T, class Compare = std::less<Key>,
 				class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class map
@@ -309,22 +45,18 @@ namespace ft
 				friend class map;
 
 				public:
-					bool	operator() (const value_type& lhs, const value_type& rhs) const {
-						return (comp(lhs.first, rhs.first));
-					}
-					bool	operator() (const key_type& k, const value_type& rhs) const {
-						return (comp(k, rhs.first));
-					}
-					bool	operator() (const value_type& lhs, const key_type& k) const {
-						return (comp(lhs.first, k));
-					}
+					bool	operator() (const value_type& lhs, const value_type& rhs) const
+						{ return (comp(lhs.first, rhs.first)); }
+					bool	operator() (const key_type& k, const value_type& rhs) const
+						{ return (comp(k, rhs.first)); }
+					bool	operator() (const value_type& lhs, const key_type& k) const
+						{ return (comp(lhs.first, k)); }
 
 				protected:
 					key_compare					comp;
 
-					value_compare(Compare c) {
-						this->comp = c;
-					}
+					value_compare(Compare c)
+						{ this->comp = c;}
 			};
 
 		// CONSTRUCT DESTRUCT
@@ -398,17 +130,14 @@ namespace ft
 			{
 				public:
 					value_type		val;
+					COLOR			color;
+					Node			*parent;
 					Node			*left;
 					Node			*right;
-					Node			*parent;
-					COLOR			color;
 
 					Node() {}
 					Node(const value_type &value) : val(value)
-					{
-						this->color = RED;
-					}
-
+						{ this->color = RED; }
 					virtual ~Node() {}
 
 					bool	is_left() const
@@ -504,59 +233,52 @@ namespace ft
 			void	swapValues(Node *u, Node *v);
 			void	fixDoubleBlack(Node *x);
 			Node	*searchTreeHelper(Node *node, const key_type &val) const;
-			
 			Node	*minimum(Node *node) const;
 			Node	*maximum(Node *node) const;
 			void	clearHelper(Node *x);
 			void	endPointUpdate(void);
 			void	basicInit(void);
 
-			void	_cpy_content(map &src);
-
 	}; // class map
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator==(const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
+						const map<Key, T, Compare, Alloc> &rhs)
+	{
 		if (lhs.size() != rhs.size())
 			return false;
+
 		return (ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 	}
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator!=(const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
-		return !(lhs == rhs);
-	}
+						const map<Key, T, Compare, Alloc> &rhs)
+		{ return !(lhs == rhs); }
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator< (const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
-		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-	}
+						const map<Key, T, Compare, Alloc> &rhs)
+		{ return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()); }
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator<=(const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
-		return !(rhs < lhs);
-	}
+						const map<Key, T, Compare, Alloc> &rhs)
+		{ return !(rhs < lhs); }
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator> (const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
-		return (rhs < lhs);
-	}
+						const map<Key, T, Compare, Alloc> &rhs)
+		{ return (rhs < lhs); }
 
 	template <class Key, class T, class Compare, class Alloc>
 	bool	operator>=(const map<Key, T, Compare, Alloc> &lhs,
-						const map<Key, T, Compare, Alloc> &rhs) {
-		return !(lhs < rhs);
-	}
+						const map<Key, T, Compare, Alloc> &rhs)
+		{ return !(lhs < rhs); }
 
 	template <class Key, class T, class Compare, class Alloc>
-	void	swap(map<Key, T, Compare, Alloc> &x, map<Key, T, Compare, Alloc> &y) {
-		x.swap(y);
-	}
+	void	swap(map<Key, T, Compare, Alloc> &x, map<Key, T, Compare, Alloc> &y)
+		{ x.swap(y); }
 
 } // namespace ft
 

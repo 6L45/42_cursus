@@ -1,7 +1,6 @@
 // CONSTRUCTS DESTRUCT
 template<class value_type, class key_compare, class allocator_type>
-ft::set<value_type, key_compare, allocator_type>
-	::set(const key_compare &comp, const allocator_type &alloc)
+ft::set<value_type, key_compare, allocator_type>::set(const key_compare &comp, const allocator_type &alloc)
 {
 	this->_alloc = alloc;
 	this->_comp = comp;
@@ -9,8 +8,7 @@ ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-ft::set<value_type, key_compare, allocator_type>
-	::set(const set<value_type> &cp)
+ft::set<value_type, key_compare, allocator_type>::set(const set<value_type> &cp)
 {
 	if (&cp == this)
 		return;
@@ -24,10 +22,9 @@ ft::set<value_type, key_compare, allocator_type>
 
 template<class value_type, class key_compare, class allocator_type>
 template <class inputIt>
-ft::set<value_type, key_compare, allocator_type>
-	::set(inputIt first, inputIt last,
-	const key_compare &comp, const allocator_type &alloc,
-	typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
+ft::set<value_type, key_compare, allocator_type>::set(inputIt first, inputIt last,
+														const key_compare &comp, const allocator_type &alloc,
+														typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type *)
 {
 	this->_alloc = alloc;
 	this->_comp = comp;
@@ -37,9 +34,8 @@ ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-ft::set<value_type, key_compare, allocator_type>	&
-	ft::set<value_type, key_compare, allocator_type>
-		::operator=(const ft::set<value_type> &cpy)
+ft::set<value_type, key_compare, allocator_type>&
+	ft::set<value_type, key_compare, allocator_type>::operator=(const ft::set<value_type> &cpy)
 {
 	if (&cpy == this)
 		return (*this);
@@ -77,8 +73,7 @@ ft::set<value_type, key_compare, allocator_type>::~set()
 
 // ELEMENT ACCESS
 template<class value_type, class key_compare, class allocator_type>
-value_type	&ft::set<value_type, key_compare, allocator_type>
-	::at(const value_type &key)
+value_type	&ft::set<value_type, key_compare, allocator_type>::at(const value_type &key)
 {
 	iterator	tmp = this->find(key);
 
@@ -92,8 +87,7 @@ value_type	&ft::set<value_type, key_compare, allocator_type>
 }
 	
 template<class value_type, class key_compare, class allocator_type>
-value_type	&ft::set<value_type, key_compare, allocator_type>
-	::operator[](const value_type &key)
+value_type	&ft::set<value_type, key_compare, allocator_type>::operator[](const value_type &key)
 	{	return (this->at(key)); }
 
 
@@ -109,23 +103,17 @@ value_type	&ft::set<value_type, key_compare, allocator_type>
 // CAPACITY
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::size_type
-	ft::set<value_type, key_compare, allocator_type>
-		::size() const {
-	return (this->_nodesNbr);
-}
+	ft::set<value_type, key_compare, allocator_type>::size() const
+	{ return (this->_nodesNbr); }
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::size_type
-	ft::set<value_type, key_compare, allocator_type>
-		::max_size() const {
-	return (this->_alloc.max_size());
-}
+	ft::set<value_type, key_compare, allocator_type>::max_size() const
+	{ return (this->_alloc.max_size()); }
 
 template<class value_type, class key_compare, class allocator_type>
-bool	ft::set<value_type, key_compare, allocator_type>
-	::empty() const {
-	return  (this->_root == NULL);
-}
+bool	ft::set<value_type, key_compare, allocator_type>::empty() const
+	{ return  (this->_root == NULL); }
 
 
 
@@ -133,8 +121,7 @@ bool	ft::set<value_type, key_compare, allocator_type>
 
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::clearHelper(Node *node)
+void	ft::set<value_type, key_compare, allocator_type>::clearHelper(Node *node)
 {
 	if (node == NULL || node == this->_endPoint)
 		return;
@@ -151,8 +138,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 
 // MODIFIERS
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::clear()
+void	ft::set<value_type, key_compare, allocator_type>::clear()
 {
 	clearHelper(this->_root);
 
@@ -164,8 +150,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 
 template<class value_type, class key_compare, class allocator_type>
 ft::pair<typename ft::set<value_type, key_compare, allocator_type>::iterator, bool>
-	ft::set<value_type, key_compare, allocator_type>
-		::insert(const value_type &val)
+	ft::set<value_type, key_compare, allocator_type>::insert(const value_type &val)
 {
 	pointer	node = this->_alloc.allocate(sizeof(Node));
 	Node	tmp(val);
@@ -224,8 +209,7 @@ ft::pair<typename ft::set<value_type, key_compare, allocator_type>::iterator, bo
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-ft::set<value_type, key_compare, allocator_type>
-	::insert(iterator pos, const value_type &val)
+ft::set<value_type, key_compare, allocator_type>::insert(iterator pos, const value_type &val)
 {
 	(void)pos;
 	return (insert(val).first);
@@ -233,17 +217,15 @@ ft::set<value_type, key_compare, allocator_type>
 
 template<class value_type, class key_compare, class allocator_type>
 template<class InputIterator>
-void	ft::set<value_type, key_compare, allocator_type>
-	::insert (InputIterator first, InputIterator last, typename ft::enable_if
-				<!ft::is_integral<InputIterator>::value, InputIterator>::type *)
+void	ft::set<value_type, key_compare, allocator_type>::insert (InputIterator first, InputIterator last, typename ft::enable_if
+																<!ft::is_integral<InputIterator>::value, InputIterator>::type *)
 {
 	while (first != last)
 		insert(*first++);
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::swap(set &x)
+void	ft::set<value_type, key_compare, allocator_type>::swap(set &x)
 {
 	set	tmp;
 
@@ -270,8 +252,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 
 
 template<class value_type, class key_compare, class allocator_type>
-size_t	ft::set<value_type, key_compare, allocator_type>
-	::erase(const value_type &key)
+size_t	ft::set<value_type, key_compare, allocator_type>::erase(const value_type &key)
 {
 	Node	*v = NULL;
 	Node	*node = this->_root;
@@ -301,25 +282,15 @@ size_t	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::erase(iterator first, iterator second)
+void	ft::set<value_type, key_compare, allocator_type>::erase(iterator first, iterator second)
 {
-	ft::vector<value_type>	keys;
-
 	while (first != second)
-	{
-		keys.push_back(*first);
-		first++;
-	}
-	for (size_t i = 0; i < keys.size(); i++)
-		erase(keys[i]);
+		erase(*first++);
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::erase(iterator pos) {
-	erase(*pos);
-}
+void	ft::set<value_type, key_compare, allocator_type>::erase(iterator pos)
+	{ erase(*pos); }
 
 
 
@@ -334,8 +305,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 // ft::set<value_type, key_compare, allocator_type>::iteratorS
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::begin()
+	ft::set<value_type, key_compare, allocator_type>::begin()
 {
 	if (this->empty())
 		return (iterator(this->_endPoint));
@@ -345,8 +315,7 @@ typename ft::set<value_type, key_compare, allocator_type>::iterator
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::begin() const
+	ft::set<value_type, key_compare, allocator_type>::begin() const
 {
 	if (this->empty())
 		return (const_iterator(this->_endPoint));
@@ -356,22 +325,17 @@ typename ft::set<value_type, key_compare, allocator_type>::const_iterator
 
 template <class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::end() {
-	return (iterator(this->_endPoint));
-}
+	ft::set<value_type, key_compare, allocator_type>::end()
+	{ return (iterator(this->_endPoint)); }
 
 template <class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::end() const {
-	return (const_iterator(this->_endPoint));
-}
+	ft::set<value_type, key_compare, allocator_type>::end() const
+	{ return (const_iterator(this->_endPoint)); }
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::reverse_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::rend()
+	ft::set<value_type, key_compare, allocator_type>::rend()
 {
 	if (this->empty())
 		return (reverse_iterator(this->_endPoint));
@@ -381,8 +345,7 @@ typename ft::set<value_type, key_compare, allocator_type>::reverse_iterator
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_reverse_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::rend() const
+	ft::set<value_type, key_compare, allocator_type>::rend() const
 {
 	if (this->empty())
 		return (const_reverse_iterator(this->_endPoint));
@@ -392,17 +355,13 @@ typename ft::set<value_type, key_compare, allocator_type>::const_reverse_iterato
 
 template <class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::reverse_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::rbegin() {
-	return (reverse_iterator(this->_endPoint));
-}
+	ft::set<value_type, key_compare, allocator_type>::rbegin()
+	{ return (reverse_iterator(this->_endPoint)); }
 
 template <class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_reverse_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::rbegin() const {
-	return (const_reverse_iterator(this->_endPoint));
-}
+	ft::set<value_type, key_compare, allocator_type>::rbegin() const
+	{ return (const_reverse_iterator(this->_endPoint)); }
 
 
 
@@ -415,8 +374,7 @@ typename ft::set<value_type, key_compare, allocator_type>::const_reverse_iterato
 // LOOKUP
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::allocator_type::size_type
-	ft::set<value_type, key_compare, allocator_type>
-		::count(const value_type &key) const
+	ft::set<value_type, key_compare, allocator_type>::count(const value_type &key) const
 {
 	if (this->find(key) == this->end())
 		return (0);
@@ -425,23 +383,18 @@ typename ft::set<value_type, key_compare, allocator_type>::allocator_type::size_
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::find(const value_type &k) {
-	return searchTreeHelper(this->_root, k);
-}
+	ft::set<value_type, key_compare, allocator_type>::find(const value_type &k)
+	{ return searchTreeHelper(this->_root, k); }
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::find(const value_type &k) const {
-	return searchTreeHelper(this->_root, k);
-}
+	ft::set<value_type, key_compare, allocator_type>::find(const value_type &k) const
+	{ return searchTreeHelper(this->_root, k); }
 
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::lower_bound(const value_type &key)
+	ft::set<value_type, key_compare, allocator_type>::lower_bound(const value_type &key)
 {
 	iterator	it = this->begin();
 	iterator	end = this->end();
@@ -454,8 +407,7 @@ typename ft::set<value_type, key_compare, allocator_type>::iterator
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::lower_bound(const value_type &key) const
+	ft::set<value_type, key_compare, allocator_type>::lower_bound(const value_type &key) const
 {
 	const_iterator	it = this->begin();
 	const_iterator	end = this->end();
@@ -468,8 +420,7 @@ typename ft::set<value_type, key_compare, allocator_type>::const_iterator
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::upper_bound(const value_type &key)
+	ft::set<value_type, key_compare, allocator_type>::upper_bound(const value_type &key)
 {
 	iterator	it = this->begin();
 	iterator	end = this->end();
@@ -485,8 +436,7 @@ typename ft::set<value_type, key_compare, allocator_type>::iterator
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::const_iterator
-	ft::set<value_type, key_compare, allocator_type>
-		::upper_bound(const value_type &key) const
+	ft::set<value_type, key_compare, allocator_type>::upper_bound(const value_type &key) const
 {
 	const_iterator	it = this->begin();
 	const_iterator	end = this->end();
@@ -503,18 +453,14 @@ typename ft::set<value_type, key_compare, allocator_type>::const_iterator
 template<class value_type, class key_compare, class allocator_type>
 ft::pair<typename ft::set<value_type, key_compare, allocator_type>::iterator,
 		typename ft::set<value_type, key_compare, allocator_type>::iterator>
-	ft::set<value_type, key_compare, allocator_type>
-		::equal_range(const value_type &key) {
-	return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
-}
+	ft::set<value_type, key_compare, allocator_type>::equal_range(const value_type &key)
+	{ return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
 
 template<class value_type, class key_compare, class allocator_type>
 ft::pair<typename ft::set<value_type, key_compare, allocator_type>::const_iterator,
 		typename ft::set<value_type, key_compare, allocator_type>::const_iterator>
-	ft::set<value_type, key_compare, allocator_type>
-		::equal_range(const value_type &key) const {
-	return (ft::make_pair(this->lower_bound(key), this->upper_bound(key)));
-}
+	ft::set<value_type, key_compare, allocator_type>::equal_range(const value_type &key) const
+	{ return (ft::make_pair(this->lower_bound(key), this->upper_bound(key))); }
 
 
 
@@ -529,8 +475,7 @@ ft::pair<typename ft::set<value_type, key_compare, allocator_type>::const_iterat
 
 //PRIVATE METHODS
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::basicInit()
+void	ft::set<value_type, key_compare, allocator_type>::basicInit()
 {
 	this->_root = NULL;
 	this->_endPoint = this->_alloc.allocate(sizeof(Node));
@@ -542,8 +487,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::insertFix(Node *k)
+void	ft::set<value_type, key_compare, allocator_type>::insertFix(Node *k)
 {
 	Node *u;
 	
@@ -602,8 +546,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::fixDoubleBlack(Node *x)
+void	ft::set<value_type, key_compare, allocator_type>::fixDoubleBlack(Node *x)
 {
 	if (x == this->_root)
 		return;
@@ -682,8 +625,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::leftRotate(Node *x)
+void	ft::set<value_type, key_compare, allocator_type>::leftRotate(Node *x)
 {
 	Node	*y = x->right;
 
@@ -705,8 +647,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::rightRotate(Node *x)
+void	ft::set<value_type, key_compare, allocator_type>::rightRotate(Node *x)
 {
 	Node	*y = x->left;
 
@@ -730,8 +671,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::Node*
-	ft::set<value_type, key_compare, allocator_type>
-		::minimum(Node *node) const
+	ft::set<value_type, key_compare, allocator_type>::minimum(Node *node) const
 {
 	while (node->left != NULL)
 		node = node->left;
@@ -741,8 +681,7 @@ typename ft::set<value_type, key_compare, allocator_type>::Node*
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::Node*
-	ft::set<value_type, key_compare, allocator_type>
-		::maximum(Node *node) const
+	ft::set<value_type, key_compare, allocator_type>::maximum(Node *node) const
 {
 	while (node->right != NULL && node->right != this->_endPoint)
 		node = node->right;
@@ -752,8 +691,7 @@ typename ft::set<value_type, key_compare, allocator_type>::Node*
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::Node*
-	ft::set<value_type, key_compare, allocator_type>
-		::searchTreeHelper(Node *node, const value_type &key) const
+	ft::set<value_type, key_compare, allocator_type>::searchTreeHelper(Node *node, const value_type &key) const
 {
 	if (node == NULL || node == this->_endPoint)
 		return (this->_endPoint);
@@ -767,8 +705,7 @@ typename ft::set<value_type, key_compare, allocator_type>::Node*
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::endPointUpdate()
+void	ft::set<value_type, key_compare, allocator_type>::endPointUpdate()
 {
 	if (this->_root == NULL)
 		return ;
@@ -779,8 +716,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::swapValues(Node *u, Node *v)
+void	ft::set<value_type, key_compare, allocator_type>::swapValues(Node *u, Node *v)
 {
 	pointer	temp;
 
@@ -791,8 +727,7 @@ void	ft::set<value_type, key_compare, allocator_type>
 
 template<class value_type, class key_compare, class allocator_type>
 typename ft::set<value_type, key_compare, allocator_type>::Node*
-	ft::set<value_type, key_compare, allocator_type>
-		::BSTreplace(Node *x)
+	ft::set<value_type, key_compare, allocator_type>::BSTreplace(Node *x)
 {
 	// when node have 2 children
 	if (x->left != NULL && x->right != NULL && x->right != this->_endPoint)
@@ -819,8 +754,7 @@ typename ft::set<value_type, key_compare, allocator_type>::Node*
 }
 
 template<class value_type, class key_compare, class allocator_type>
-void	ft::set<value_type, key_compare, allocator_type>
-	::deleteNode(Node *rmNode)
+void	ft::set<value_type, key_compare, allocator_type>::deleteNode(Node *rmNode)
 {
 	Node	*replaceNode = NULL;
 	Node	**rmPlace = &this->_root;

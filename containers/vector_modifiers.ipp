@@ -144,9 +144,7 @@ template<class value_type, class allocator_type>
 typename ft::vector<value_type, allocator_type>::iterator
 	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_type, allocator_type>::iterator pos,
 													const value_type &val)
-{
-	return (this->insert(pos, 1, val));
-}
+	{ return (this->insert(pos, 1, val)); }
 
 template<class value_type, class allocator_type>
 typename ft::vector<value_type, allocator_type>::iterator

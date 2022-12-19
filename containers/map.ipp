@@ -304,15 +304,8 @@ template<class key_type, class mapped_type, class key_compare, class allocator_t
 void	ft::map<key_type, mapped_type, key_compare, allocator_type>
 	::erase(iterator first, iterator second)
 {
-	ft::vector<key_type>	keys;
-
 	while (first != second)
-	{
-		keys.push_back(first->first);
-		first++;
-	}
-	for (size_t i = 0; i < keys.size(); i++)
-		erase(keys[i]);
+		erase((first++)->first);
 }
 
 template<class key_type, class mapped_type, class key_compare, class allocator_type>
