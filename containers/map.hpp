@@ -64,9 +64,9 @@ namespace ft
 			map(inputIt first, inputIt last,
 				const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type * = NULL);
-			explicit map(const key_compare &comp = key_compare(),
+			map(const key_compare &comp = key_compare(),
 					const allocator_type &alloc = allocator_type());
-			explicit map(const ft::map<Key, T> &cp);
+			map(const ft::map<Key, T> &cp);
 			virtual ~map();
 
 			map &operator=(const ft::map<Key, T> &cpy);

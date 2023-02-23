@@ -62,10 +62,10 @@ ft::vector<value_type, allocator_type>	&ft::vector<value_type, allocator_type>::
 
 	if (this->_start)
 		this->_alloc.deallocate(this->_start, this->capacity());
-	this->_start = this->_alloc.allocate(cpy.capacity());
+	this->_start = this->_alloc.allocate(cpy.size());
 	std::copy(cpy.begin(), cpy.end(), this->_start);
 	this->_end = this->_start + cpy.size();
-	this->_end_capacity = this->_start + cpy.capacity();
+	this->_end_capacity = this->_end;
 	
 	return (*this);
 }

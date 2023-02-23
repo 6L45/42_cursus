@@ -8,6 +8,8 @@
 # include "random_access_iterator.hpp"
 # include "reverse_iterator.hpp"
 
+#include<cmath>
+
 namespace ft
 {
 	template<class T, class Alloc = std::allocator<T> >
@@ -32,6 +34,11 @@ namespace ft
 					iterator(value_type *src) : random_access_iterator<value_type>(src) {}
 					iterator(void): random_access_iterator<value_type>() {};
 					iterator(const iterator &src): random_access_iterator<value_type>(src) {};
+					iterator& operator=(const iterator& other)
+					{
+						super::operator=(other);
+						return *this;
+					}
 
 					reference			operator*(void) const
 						{ return (super::operator*()); }

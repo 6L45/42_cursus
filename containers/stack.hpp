@@ -16,6 +16,13 @@ namespace ft
 			typedef typename Container::const_reference		const_reference;
 			
 			stack(const Container &ctn = Container());
+			stack(const stack& other) : stk(other.stk) {}
+			stack	&operator=(const stack &cp)
+			{
+				this->stk = cp.stk;
+				return *this;
+			}
+
 			~stack() {};
 
 			bool			empty(void) const;

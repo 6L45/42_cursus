@@ -2,7 +2,7 @@
 template<class value_type, class allocator_type>
 bool	ft::vector<value_type, allocator_type>::empty() const
 {
-	if (this->_start == NULL || this->_start == this->_end - 1 || !this->size())
+	if (this->_start == NULL || !this->size())
 		return (true);
 	return (false);
 }

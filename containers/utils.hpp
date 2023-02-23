@@ -6,6 +6,10 @@ namespace ft
 	template <class Ite1, class Ite2>
 	bool	equal(Ite1 first1, Ite1 last1, Ite2 first2)
 	{
+		if (first1 == NULL && first2 == NULL)
+			return true;
+		else if (first1 == NULL || first2 == NULL)
+			return false;
 		while (first1 != last1)
 		{
 			if (*first1 != *first2)
@@ -52,7 +56,9 @@ namespace ft
 
 			return (*this);
 		}
-
+ 
+		pair(const pair &pr) : first(pr.first), second(pr.second) {} 
+		
 		virtual ~pair() {}
 	};
 

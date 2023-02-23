@@ -124,9 +124,10 @@ directories:
 
 t:
 	./test.sh
-
 mil:
 	cd ./containers_test/ && bash do.sh
+jc:
+	cd ./test_container/ && bash launch.sh
 
 # Compile object files for vector directory
 $(VECDIR)/%.o: ./containers_test/srcs/vector/%.cpp

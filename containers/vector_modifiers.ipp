@@ -67,6 +67,9 @@ typename ft::vector<value_type, allocator_type>::iterator
 	if (this->size() + n > this->capacity())
 	{
 		ft::vector<value_type>	tmp(this->size() + n);
+		if (this->capacity() + 1 < this->size() + n
+			&& this->capacity() * 2 > this->size() + n)
+			tmp.reserve(this->capacity() * 2);
 
 		for (size_t i = 0; i < dist; i++, p++)
 			tmp[p] = *(this->_start + i);
@@ -111,7 +114,16 @@ void	ft::vector<value_type, allocator_type>::insert(typename ft::vector<value_ty
 
 	if (this->size() + offset > this->capacity())
 	{
+		int mult = 0;
+		if (this->capacity())
+		{
+			while (this->capacity() * mult < this->size() + offset)
+				mult++;
+		}
 		ft::vector<value_type>	tmp(this->size() + offset);
+		if (mult)
+			tmp.reserve(this->capacity() * mult);
+
 		for (size_t i = 0; i < dist; i++, p++)
 			tmp[p] = *(this->_start + i);
 		for (;first != last; first++, p++)
