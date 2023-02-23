@@ -58,9 +58,9 @@ namespace ft
 			set(inputIt first, inputIt last,
 				const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type(),
 				typename ft::enable_if<!ft::is_integral<inputIt>::value, inputIt>::type * = NULL);
-			explicit set(const key_compare &comp = key_compare(),
+			set(const key_compare &comp = key_compare(),
 					const allocator_type &alloc = allocator_type());
-			explicit set(const ft::set<T> &cp);
+			set(const ft::set<T> &cp);
 			virtual ~set();
 
 			set &operator=(const ft::set<T> &cpy);
