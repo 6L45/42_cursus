@@ -71,7 +71,7 @@ int	file_reader(int fd, char **line)
 
 // backup = static
 // lecture de ce que contient la static si \n dans la static
-void	backup_reader(char **backup, char **line)
+void	backup_reader(char** backup, char **line)
 {
 	char	*str;
 	char	*ptrbu;
