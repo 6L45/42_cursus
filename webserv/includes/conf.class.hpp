@@ -1,0 +1,127 @@
+#ifndef CONFIG_CLASS_HPP
+#define CONFIG_CLASS_HPP
+#include "common.hpp"
+
+/*
+	Macro to access the bit of options
+		SC_DIRISACTIVE return true if directory browser is allowed, false otherwise
+		SC_BODYISLIMITED return true if body required a max size, false otherwise
+		SC_GETISSET, SC_PORTISSET , SC_DELETEISSET return true if the method is authorisez, false otherwise
+*/
+#define SC_DIRISACTIVE(_sc) (_sc.options & (1 << 0))
+#define SC_BODYISLIMITED(_sc) (_sc.options & (1 << 1))
+#define SC_GETISSET(_sc) (_sc.methods & (1 << 0))
+#define SC_PORTISSET(_sc) (_sc.methods & (1 << 1))
+#define SC_DELETEISSET(_sc) (_sc.methods & (1 << 2))
+#define SC_PUTISSET(_sc) (_sc.methods & (1 << 3))
+#define SC_HEADISSET(_sc) (_sc.methods & (1 << 4))
+
+/*
+	Macro to set the bit of options
+*/
+#define _SC_DIRACTIVATE(_sc) (_sc.options = _sc.options | (1 << 0))
+#define _SC_DIROFF(_sc) (_sc.options = 0xFFFE & _sc.options)
+#define _SC_BODYLIMITACTIVATE(_sc) (_sc.options = _sc.options | (1 << 1))
+#define _SC_GETACTIVATE(_sc) (_sc.methods = _sc.methods | (1 << 0))
+#define _SC_PORTACTIVATE(_sc) (_sc.methods = _sc.methods | (1 << 1))
+#define _SC_DELETEACTIVATE(_sc) (_sc.methods = _sc.methods | (1 << 2))
+
+class __location
+{
+	public:
+		__location(): options(0), methods(0), body_limits(0), body_min_size(0) {};
+		std::string											loc;
+		std::vector<std::string>							index;
+		std::string											root;
+		char												options;
+		char												methods;
+		int													body_limits;
+		int													body_min_size;
+		std::string											post_dir;
+		std::string											cgi_path;
+		// std::vector<std::pair<std::string, std::string> >	cgi;
+};
+
+class __cgi: public __location { };
+// {
+// public:
+// 	std::string											loc;
+// 	std::string											cgi_path;
+// 	char												methods;
+// 	int													body_limits;
+// 	int													body_min_size;
+// };
+
+class __server_conf
+{
+public:
+	__server_conf(): port(-1), unactive_max_delay(120000) {};
+
+	std::string					server_name;
+	int							port;
+	std::vector<std::string>	host;
+	std::string					root;
+	std::vector<std::string>	index;	
+	std::vector<__location>		location;
+	std::vector<__cgi>			cgi;
+	std::string					default_error_root;
+	unsigned int				unactive_max_delay;
+};
+
+class Conf
+{
+public:
+	Conf(std::ifstream &fs);
+	Conf(std::string path_to_file);
+	~Conf();
+
+private:
+	std::vector<__server_conf> _sc;
+	int _max_connexion;
+	std::string _default_error_root;
+	int _line_read;
+
+	Conf();
+
+	void __parse_config_file(std::ifstream &fs);
+	void __parse_server(std::ifstream &fs, std::string &line);
+	void __parse_location(std::ifstream &fs, std::string &line, __server_conf& sc);
+	void __parse_cgi(std::ifstream &fs, std::string &line, __server_conf& sc);
+	template <class T>
+	void __parse_html(std::ifstream &fs, std::string& line, T& srv);
+	template <class T>
+	void __add_to(T &to, std::string &s);
+	void __get_info(unsigned int &c, std::string &raw);
+	void __get_info(int &c, std::string &raw);
+	void __get_info(std::string &c, std::string &raw);
+	void __error_file_notif(const int line, const std::string &error) const;
+	std::string::iterator __erase_tab_space(std::string &s) const;
+	std::string &__erase_comment(std::string &s) const;
+	std::string &__erase_from_char(std::string &s, char c) const;
+	std::string &__erase_word(std::string &s) const;
+
+
+	void	__print_everything() const;
+	void	__get_line(std::ifstream &fs, std::string &line);
+	
+	bool	__valide_conf_file_name(const std::string &name) const;
+	void	__check_conf_params();
+	void	__check_conf_server_params(const __server_conf& server);
+
+	class config_validity_exception : public std::exception
+	{
+		private:
+			char * _msg;
+		public:
+		config_validity_exception(char * msg) : _msg(msg) {};
+		using std::exception::what;
+		const char * what()
+		{
+			return _msg;
+		}
+	};
+
+	friend class Webserv;
+};
+
+#endif

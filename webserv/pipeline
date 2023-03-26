@@ -1,0 +1,118 @@
+HEAD http://localhost:18002/a3-test/index.html HTTP/1.1
+Negotiate: 1.0
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a3-test/index.html.ja.jis HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+
+HEAD http://localhost:18002/a3-test/index.html HTTP/1.1
+Negotiate: 1.0
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a3-test/index.html.ja.jis HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.de HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/limited1/protected HTTP/1.1
+Host: localhost:18002
+User-Agent: CS531 Assignment 4 Tester/1678664804
+Authorization: Basic YmRhOmJkYQxx
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.en HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.ja.jis HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.de HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/limited1/protected HTTP/1.1
+Host: localhost:18002
+User-Agent: CS531 Assignment 4 Tester/1678664804
+Authorization: Basic YmRhOmJkYQxx
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.en HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+HEAD http://localhost:18002/a4-test/index.html.ja.jis HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+
+OPTIONS http://localhost:18002/a5-test/limited3/env.cgi HTTP/1.1
+Host: localhost:18002
+User-Agent: CS531 Assignment 5 Tester/1678664805
+Referer: http://localhost:18002/a5-test/index.html
+Authorization: Basic amJvbGxlbjpqYm9sbGVu
+Connection: close
+
+______________
+______________
+
+GET http://localhost:18002/a5-test/ls.cgi HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+GET http://localhost:18002/a5-test/location.cgi HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+
+GET http://localhost:18002/a5-test/ls.cgi HTTP/1.1
+Host: localhost:18002
+
+______________
+______________
+
+GET http://localhost:18002/a5-test/location.cgi HTTP/1.1
+Host: localhost:18002
+Connection: close
+
+______________
+______________
+

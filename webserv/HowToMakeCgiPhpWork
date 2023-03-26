@@ -1,0 +1,10 @@
+install php
+
+use 'which cgi-php' to find direct path to executable
+use 'php -i | grep php.ini' to find php.ini
+
+uncomment this :
+cgi.force_redirect = 0
+cgi.redirect_status_env ="yes"
+
+Done
