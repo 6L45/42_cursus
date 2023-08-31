@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clients {
+  id     Int     @id @default(autoincrement())
+  id42   Int     @unique
+  img    String  @db.VarChar(100)
+  name   String  @unique @db.VarChar(50)
+  cookie String
+  Dfa    Boolean
+  DfaSecret String?
+  dfaVerified Boolean?
+
+  client1     ClientToClient[]         @relation("ClientToClient_client1")
+  client2     ClientToClient[]         @relation("ClientToClient_client2")
+  histClient1 GameHistoric[]           @relation("GameHistoric_client1")
+  histClient2 GameHistoric[]           @relation("GameHistoric_client2")
+  roomsOwned  Rooms[]                  @relation("RoomsOwned")
+  msgSent     MessagesClientToClient[] @relation("ClientToClient_client1")
+  msgReceived MessagesClientToClient[] @relation("ClientToClient_client2")
+  roomMembers RoomMembers[]            @relation("ClientRoomMembers")
+  roomClient2 Rooms[]                  @relation("RoomClients")
+  clientStats ClientStats[]
+  messages    MessagesRooms[]
+}
+
+model ClientToClient {
+  id     Int    @id @default(autoincrement())
+  status Int
+
+  client1Id Int
+  client2Id Int
+  client1   Clients @relation("ClientToClient_client1", fields: [client1Id], references: [id])
+  client2   Clients @relation("ClientToClient_client2", fields: [client2Id], references: [id])
+
+  @@index([status])
+  @@map("clients_to_clients")
+  @@unique([client1Id, client2Id])
+}
+
+model GameHistoric {
+  id        Int    @id @default(autoincrement())
+  persScore Int
+  vsScore   Int
+
+  client1Id Int
+  client2Id Int
+  client1   Clients @relation("GameHistoric_client1", fields: [client1Id], references: [id])
+  client2   Clients @relation("GameHistoric_client2", fields: [client2Id], references: [id])
+
+  @@map("game_historic")
+}
+
+model ClientStats {
+  id     Int    @id @default(autoincrement())
+  played Int // need
+  won    Int // need
+  score  Int      // osef
+  title  String? @db.VarChar(50) // osef
+  hf     String? @db.VarChar(100) // osef
+
+  clientId Int     @unique // need
+  client   Clients @relation(fields: [clientId], references: [id])
+
+  @@map("client_stats")
+}
+
+model Rooms {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(50)
+
+  secu     Int
+  password String?
+
+  messages MessagesRooms[]
+
+  client2Id Int?
+  client2   Clients? @relation("RoomClients", fields: [client2Id], references: [id], onDelete: Cascade)
+  ownerid   Int
+  owner     Clients  @relation("RoomsOwned", fields: [ownerid], references: [id], onDelete: Cascade)
+
+  members  RoomMembers[] @relation("RoomMembersToRooms")
+
+  @@unique([name], name: "name_uniq")
+  @@index([ownerid], name: "owner_idx")
+  @@map("rooms")
+}
+
+model RoomMembers {
+  id        Int      @id @default(autoincrement())
+  roomId    Int
+  room      Rooms    @relation("RoomMembersToRooms", fields: [roomId], references: [id])
+  memberId  Int
+  member    Clients  @relation("ClientRoomMembers", fields: [memberId], references: [id])
+  status    Int
+
+  @@map("room_members")
+  @@unique([roomId, memberId])
+}
+
+model MessagesRooms {
+  id   Int      @id @default(autoincrement())
+  msg  String
+  time DateTime @default(now())
+
+  roomId  Int
+  room      Rooms    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  clientId Int
+  client   Clients @relation(fields: [clientId], references: [id])
+
+  @@map("messages_rooms")
+}
+
+model MessagesClientToClient {
+  id      Int      @id @default(autoincrement())
+  message String
+  time    DateTime @default(now())
+
+  clientSrcId  Int
+  clientDestId Int
+  clientSrc    Clients @relation("ClientToClient_client1", fields: [clientSrcId], references: [id])
+  clientDest   Clients @relation("ClientToClient_client2", fields: [clientDestId], references: [id])
+
+  @@map("messages_client_to_client")
+}

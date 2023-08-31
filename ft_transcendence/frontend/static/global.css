@@ -1,0 +1,22 @@
+/*
+* This is global css imported in app.html
+* Here i set the font which is used everywhere, and set to default some body style
+*/
+
+@font-face {
+	font-family: Oxanium;
+	src: url(Oxanium-VariableFont_wght.ttf);
+}
+
+body 
+{
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  background: rgb(23,23,23);
+  font-family: 'Oxanium';
+}
+
+p {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
